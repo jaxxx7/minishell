@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/29 12:42:17 by mhachem           #+#    #+#             */
-/*   Updated: 2026/01/05 16:38:54 by mehdi            ###   ########.fr       */
+/*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
+/*   Updated: 2026/01/11 16:24:50 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,124 @@
 # define MINISHELL_H
 
 # include <stdio.h>
-# include "../libft/libft.h"
+# include <stdlib.h>
+# include <unistd.h>
+# include <signal.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "libft.h"
 
-// Les types de tokens (pour ton usage interne au parsing)
-typedef enum e_token_type {
-    WORD,       // Un mot classique (ls, -l, fichier.txt)
-    PIPE,       // |
-    REDIR_IN,   // <
-    REDIR_OUT,  // >
-    APPEND,     // >>
-    HEREDOC,    // <<
-} t_type;
+/* ************************************************************************** */
+/*                              ENUMS & DEFINES                               */
+/* ************************************************************************** */
 
-// Structure intermédiaire : Liste de tokens (mots bruts)
-typedef struct s_token {
-    char            *value; // Le texte (ex: "ls", "|", ">")
-    t_type          type;   // Le type
-    struct s_token  *next;
-} t_token;
+# define WORD 0
+# define PIPE 1
+# define REDIR_IN 2
+# define REDIR_OUT 3
+# define REDIR_APPEND 4
+# define HEREDOC 5
 
-// --- CE QUE TU DONNES A TON MATE (L'EXEC) ---
+/* ************************************************************************** */
+/*                               STRUCTURES                                   */
+/* ************************************************************************** */
 
-// Structure finale : Une commande
-typedef struct s_cmd {
-    char            **args;    // Tableau pour execve : {"ls", "-l", NULL}
-    // Tu peux gérer les redirections ici, ou via une liste séparée
-    // Pour faire simple, une petite liste de redirections attachée à la commande :
-    t_token         *redirections; // Liste des fichiers in/out pour cette commande
-    struct s_cmd    *next;     // La prochaine commande après le pipe (ou NULL)
-} t_cmd;
+typedef struct s_token
+{
+	char			*value;
+	int				type;
+	struct s_token	*next;
+}	t_token;
 
-// /PARSING
+typedef struct s_cmd
+{
+	char			**args;
+	char			*infile;
+	char			*outfile;
+	int				append;
+	char			*heredoc;
+	struct s_cmd	*next;
+}	t_cmd;
 
-// lexer.c
-t_token *new_token(int type, char *str);
-void	token_add_back(t_token **head, t_token *new_token);
-t_token *lexer(char *input);
+/* ************************************************************************** */
+/*                           GLOBAL VARIABLE                                  */
+/* ************************************************************************** */
 
-// utils.c
-int     is_separator(char c);
+extern int	g_exit_status;
+
+/* ************************************************************************** */
+/*                           TOKENIZATION                                     */
+/* ************************************************************************** */
+
+// tokenize.c
+t_token	*tokenize(char *input);
+int		process_token(char *input, int *i, t_token **tokens);
+
+// tokenize_word.c
+int		get_word_len(char *str, int start);
+char	*extract_word(char *str, int start, int len);
+
+// tokenize_free.c
+void	free_tokens(t_token *tokens);
+
+/* ************************************************************************** */
+/*                              PARSING                                       */
+/* ************************************************************************** */
+
+// parse_commands.c
+t_cmd	*parse_commands(t_token *tokens);
+
+// parse_single_cmd.c
+t_cmd	*parse_single_cmd(t_token *tokens);
+
+// parse_syntax.c
+int		check_syntax(t_token *tokens);
+
+// parse_free.c
+void	free_single_cmd(t_cmd *cmd);
+void	free_commands(t_cmd *cmds);
+
+/* ************************************************************************** */
+/*                              EXPANSION                                     */
+/* ************************************************************************** */
+
+// expand_tokens.c
+t_token	*expand_tokens(t_token *tokens, char **env);
+
+// expand_utils.c
+char	*get_env_value(char *var_name, char **env);
+int		get_var_len(char *str);
+char	*strjoin_free_s1(char *s1, char *s2);
+
+// expand_str.c
+char	*expand_str(char *str, char **env);
+
+/* ************************************************************************** */
+/*                              EXECUTION                                     */
+/* ************************************************************************** */
+
+// execute.c (À IMPLÉMENTER)
+void	execute_commands(t_cmd *cmds, char ***env);
+
+/* ************************************************************************** */
+/*                              BUILTINS                                      */
+/* ************************************************************************** */
+
+// builtins (À IMPLÉMENTER)
+int		builtin_echo(char **args);
+int		builtin_cd(char **args, char ***env);
+int		builtin_pwd(void);
+int		builtin_export(char **args, char ***env);
+int		builtin_unset(char **args, char ***env);
+int		builtin_env(char **env);
+int		builtin_exit(char **args);
+
+/* ************************************************************************** */
+/*                           ENVIRONMENT                                      */
+/* ************************************************************************** */
+
+// env_utils.c (À IMPLÉMENTER)
+char	**copy_env(char **envp);
+void	free_env(char **env);
 
 #endif
