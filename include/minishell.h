@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/13 11:40:08 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/01/13 12:43:23 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,21 @@ extern int	g_exit_status;
 
 // tokenize.c
 t_token	*tokenize(char *input);
-int		process_token(char *input, int *i, t_token **tokens);
 
 // tokenize_word.c
 int		get_word_len(char *str, int start);
+
+// tokenize_word_utils.c
 char	*extract_word(char *str, int start, int len);
+
+// tokenize_utils.c
+int		get_token_type(char *str, int i);
+t_token	*create_token(char *value, int type);
+void	add_token_back(t_token **tokens, t_token *new_token);
+int		process_token(char *input, int *i, t_token **tokens);
+
+// tokenize_operators.c
+int		process_operator(char *input, int *i, t_token **tokens);
 
 // tokenize_free.c
 void	free_tokens(t_token *tokens);
@@ -103,6 +113,13 @@ void	free_commands(t_cmd *cmds);
 
 // expand_tokens.c
 t_token	*expand_tokens(t_token *tokens, char **env);
+
+// expand_quotes.c
+int		get_quote_type(char *str);
+char	*remove_quotes(char *str);
+int		expand_single_quote(t_token *tmp);
+int		expand_double_quote(t_token *tmp, char **env);
+int		expand_no_quote(t_token *tmp, char **env);
 
 // expand_utils.c
 char	*get_env_value(char *var_name, char **env);

@@ -6,43 +6,55 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 17:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:05:26 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/01/11 17:10:00 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*expand_variable(char *str, int *i, char **env, char *result)
+static char	*expand_var_found(char *str, int *i, char **env, char *result)
 {
 	int		len;
 	char	*chunk;
 	char	*var_val;
 
 	len = get_var_len(&str[*i + 1]);
-	if (len > 0)
-	{
-		chunk = ft_substr(str, *i + 1, len);
-		if (!chunk)
-			return (free(result), NULL);
-		var_val = get_env_value(chunk, env);
-		free(chunk);
-		result = strjoin_free_s1(result, var_val);
-		if (!result)
-			return (NULL);
-		*i += 1 + len;
-	}
-	else
-	{
-		chunk = ft_substr(str, *i, 1);
-		if (!chunk)
-			return (free(result), NULL);
-		result = strjoin_free_s1(result, chunk);
-		free(chunk);
-		if (!result)
-			return (NULL);
-		(*i)++;
-	}
+	chunk = ft_substr(str, *i + 1, len);
+	if (!chunk)
+		return (free(result), NULL);
+	var_val = get_env_value(chunk, env);
+	free(chunk);
+	result = strjoin_free_s1(result, var_val);
+	if (!result)
+		return (NULL);
+	*i += 1 + len;
 	return (result);
+}
+
+static char	*expand_dollar_only(char *str, int *i, char *result)
+{
+	char	*chunk;
+
+	chunk = ft_substr(str, *i, 1);
+	if (!chunk)
+		return (free(result), NULL);
+	result = strjoin_free_s1(result, chunk);
+	free(chunk);
+	if (!result)
+		return (NULL);
+	(*i)++;
+	return (result);
+}
+
+static char	*expand_variable(char *str, int *i, char **env, char *result)
+{
+	int		len;
+
+	len = get_var_len(&str[*i + 1]);
+	if (len > 0)
+		return (expand_var_found(str, i, env, result));
+	else
+		return (expand_dollar_only(str, i, result));
 }
 
 static char	*expand_text(char *str, int *i, char *result)
