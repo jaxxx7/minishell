@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 16:24:50 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/01/13 11:40:08 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,12 @@ t_cmd	*parse_single_cmd(t_token *tokens);
 
 // parse_syntax.c
 int		check_syntax(t_token *tokens);
+int		check_pipe(t_token *token);
+int		check_redir(t_token *token);
+
+// parse_redir.c
+int		process_redirections(t_cmd *cmd, t_token *tokens);
+int		handle_redir(t_cmd *cmd, t_token *token);
 
 // parse_free.c
 void	free_single_cmd(t_cmd *cmd);

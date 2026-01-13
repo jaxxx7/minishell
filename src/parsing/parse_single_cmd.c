@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:15:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 16:23:47 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/01/11 15:25:00 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,27 +67,6 @@ static int	fill_args(t_cmd *cmd, t_token *tokens)
 			tokens = tokens->next;
 	}
 	cmd->args[i] = NULL;
-	return (1);
-}
-
-static int	handle_redir(t_cmd *cmd, t_token *token)
-{
-	if (!token->next || token->next->type != WORD)
-		return (0);
-	if (token->type == REDIR_IN)
-		cmd->infile = ft_strdup(token->next->value);
-	else if (token->type == REDIR_OUT)
-	{
-		cmd->outfile = ft_strdup(token->next->value);
-		cmd->append = 0;
-	}
-	else if (token->type == REDIR_APPEND)
-	{
-		cmd->outfile = ft_strdup(token->next->value);
-		cmd->append = 1;
-	}
-	else if (token->type == HEREDOC)
-		cmd->heredoc = ft_strdup(token->next->value);
 	return (1);
 }
 

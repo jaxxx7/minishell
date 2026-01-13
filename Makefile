@@ -67,7 +67,7 @@ EXPAND_SRC  = expand_tokens.c \
 
 MAIN_OBJ    = $(OBJ_DIR)main.o
 PARSE_OBJ   = $(addprefix $(OBJ_DIR)parsing/, $(PARSE_SRC:.c=.o))
-EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o
+EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o
 
 OBJS        = $(MAIN_OBJ) $(PARSE_OBJ) $(EXPAND_OBJ)
 
