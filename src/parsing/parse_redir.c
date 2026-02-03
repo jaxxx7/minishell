@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/03 13:38:10 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,3 @@ int	process_redirections(t_cmd *cmd, t_token *tokens)
 	}
 	return (1);
 }
-
-// j'ai du ajouter ce fichier sinon ça marchait pas j'ai pas encore regardé pourquoi
