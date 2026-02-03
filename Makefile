@@ -69,6 +69,8 @@ EXEC_SRC    = exec.c \
               exec_simple.c \
               exec_path.c \
               exec_pipe.c \
+              exec_pipe_utils.c \
+              exec_pipe_run.c \
               exec_redir.c \
               exec_heredoc.c \
               exec_env.c \
