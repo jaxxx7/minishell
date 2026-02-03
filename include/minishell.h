@@ -53,6 +53,13 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+typedef struct s_pipe_data
+{
+	t_cmd	*cmds;
+	char	***env;
+	int		count;
+}	t_pipe_data;
+
 /* ************************************************************************** */
 /*                           GLOBAL VARIABLE                                  */
 /* ************************************************************************** */
@@ -153,6 +160,17 @@ int		handle_heredoc(char *delimiter);
 
 // exec_pipe.c
 int		execute_pipes(t_cmd *cmds, char ***env);
+void	close_pipes(int *pipes, int count);
+int		create_pipes(int *pipes, int count);
+void	setup_pipe_child(int *pipes, int index, int count);
+void	wait_all_children(pid_t *pids, int count);
+
+// exec_pipe_utils.c
+int		count_cmds(t_cmd *cmds);
+t_cmd	*get_cmd_at(t_cmd *cmds, int index);
+void	pipe_child_exec(t_cmd *cmd, char ***env);
+int		*allocate_pipes(int count);
+pid_t	*allocate_pids(int count);
 
 // exec_error.c
 void	print_error(char *cmd, char *msg);

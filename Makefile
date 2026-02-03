@@ -6,7 +6,7 @@
 #    By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/11 16:30:00 by mehdi             #+#    #+#              #
-#    Updated: 2026/02/03 11:49:37 by mehdi            ###   ########.fr        #
+#    Updated: 2026/01/13 12:43:38 by mehdi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,8 +56,7 @@ PARSE_SRC   = tokenize.c \
               parse_single_cmd.c \
               parse_syntax.c \
               parse_redir.c \
-              parse_free.c \
-			  tokenize_word_utils.c
+              parse_free.c
 
 # Expansion
 EXPAND_SRC  = expand_tokens.c \
@@ -70,6 +69,8 @@ EXEC_SRC    = exec.c \
               exec_simple.c \
               exec_path.c \
               exec_pipe.c \
+              exec_pipe_utils.c \
+              exec_pipe_run.c \
               exec_redir.c \
               exec_heredoc.c \
               exec_env.c \
