@@ -135,6 +135,7 @@ int		expand_no_quote(t_token *tmp, char **env);
 char	*get_env_value(char *var_name, char **env);
 int		get_var_len(char *str);
 char	*strjoin_free_s1(char *s1, char *s2);
+char	*expand_exit_status(int *i, char *result);
 
 // expand_str.c
 char	*expand_str(char *str, char **env);

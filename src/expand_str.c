@@ -50,6 +50,8 @@ static char	*expand_variable(char *str, int *i, char **env, char *result)
 {
 	int		len;
 
+	if (str[*i + 1] == '?')
+		return (expand_exit_status(i, result));
 	len = get_var_len(&str[*i + 1]);
 	if (len > 0)
 		return (expand_var_found(str, i, env, result));

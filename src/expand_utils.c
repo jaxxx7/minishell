@@ -52,3 +52,18 @@ char	*strjoin_free_s1(char *s1, char *s2)
 	free(s1);
 	return (new_str);
 }
+
+char	*expand_exit_status(int *i, char *result)
+{
+	char	*status_str;
+
+	status_str = ft_itoa(g_exit_status);
+	if (!status_str)
+		return (free(result), NULL);
+	result = strjoin_free_s1(result, status_str);
+	free(status_str);
+	if (!result)
+		return (NULL);
+	*i += 2;
+	return (result);
+}
