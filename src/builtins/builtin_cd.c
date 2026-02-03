@@ -64,6 +64,8 @@ int	builtin_cd(char **args, char ***env)
 {
 	char	*path;
 
+	if (args[2])
+		return (error_return("cd", "too many arguments", 1));
 	path = get_cd_path(args, env);
 	if (!path)
 		return (1);
