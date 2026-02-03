@@ -87,6 +87,9 @@ t_cmd	*parse_single_cmd(t_token *tokens);
 // parse_syntax.c
 int		check_syntax(t_token *tokens);
 
+// parse_redir.c
+int		process_redirections(t_cmd *cmd, t_token *tokens);
+
 // parse_free.c
 void	free_single_cmd(t_cmd *cmd);
 void	free_commands(t_cmd *cmds);
@@ -110,27 +113,76 @@ char	*expand_str(char *str, char **env);
 /*                              EXECUTION                                     */
 /* ************************************************************************** */
 
-// execute.c (À IMPLÉMENTER)
+// exec.c
 void	execute_commands(t_cmd *cmds, char ***env);
+
+// exec_simple.c
+int		execute_external(t_cmd *cmd, char **env);
+
+// exec_path.c
+char	*get_cmd_path(char *cmd, char **env);
+
+// exec_redir.c
+int		setup_redirections(t_cmd *cmd);
+
+// exec_heredoc.c
+int		handle_heredoc(char *delimiter);
+
+// exec_pipe.c
+int		execute_pipes(t_cmd *cmds, char ***env);
+
+// exec_error.c
+void	print_error(char *cmd, char *msg);
+void	print_error_arg(char *cmd, char *arg, char *msg);
+int		error_return(char *cmd, char *msg, int ret);
+
+// exec_signals.c
+void	handle_sigint(int sig);
+void	setup_child_signals(void);
+void	setup_parent_signals(void);
+void	restore_signals(void);
+
+// exec_env.c
+int		get_env_index(char *name, char **env);
+char	*get_env_val(char *name, char **env);
+int		set_env_var(char *name, char *value, char ***env);
+int		add_env_var(char *new_var, char ***env);
+int		unset_env_var(char *name, char ***env);
 
 /* ************************************************************************** */
 /*                              BUILTINS                                      */
 /* ************************************************************************** */
 
-// builtins (À IMPLÉMENTER)
+// builtins.c
+int		is_builtin(char *cmd);
+int		execute_builtin(t_cmd *cmd, char ***env);
+
+// builtin_echo.c
 int		builtin_echo(char **args);
+
+// builtin_cd.c
 int		builtin_cd(char **args, char ***env);
+
+// builtin_pwd.c
 int		builtin_pwd(void);
+
+// builtin_export.c
 int		builtin_export(char **args, char ***env);
+
+// builtin_unset.c
 int		builtin_unset(char **args, char ***env);
+
+// builtin_env.c
 int		builtin_env(char **env);
+
+// builtin_exit.c
 int		builtin_exit(char **args);
 
 /* ************************************************************************** */
 /*                           ENVIRONMENT                                      */
 /* ************************************************************************** */
 
-// env_utils.c (À IMPLÉMENTER)
+// env_utils.c
 char	**copy_env(char **envp);
 void	free_env(char **env);
 

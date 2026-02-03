@@ -17,7 +17,7 @@
 NAME        = minishell
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g
+CFLAGS      = -Wall -Wextra -Werror -Wno-unused-function -g
 LDFLAGS     = -lreadline
 RM          = rm -f
 
@@ -26,6 +26,8 @@ RM          = rm -f
 # **************************************************************************** #
 
 PARSE_DIR   = src/parsing/
+EXEC_DIR    = src/exec/
+BUILT_DIR   = src/builtins/
 OBJ_DIR     = obj/
 INC_DIR     = include/
 LIBFT_DIR   = libft/
@@ -47,7 +49,6 @@ MAIN_SRC    = main.c
 # Parsing
 PARSE_SRC   = tokenize.c \
               tokenize_word.c \
-              tokenize_word_utils.c \
               tokenize_utils.c \
               tokenize_free.c \
               parse_commands.c \
@@ -61,15 +62,38 @@ EXPAND_SRC  = expand_tokens.c \
               expand_utils.c \
               expand_str.c
 
+# Execution
+EXEC_SRC    = exec.c \
+              exec_simple.c \
+              exec_path.c \
+              exec_pipe.c \
+              exec_redir.c \
+              exec_heredoc.c \
+              exec_env.c \
+              exec_signals.c \
+              exec_error.c
+
+# Builtins
+BUILT_SRC   = builtins.c \
+              builtin_echo.c \
+              builtin_cd.c \
+              builtin_pwd.c \
+              builtin_export.c \
+              builtin_unset.c \
+              builtin_env.c \
+              builtin_exit.c
+
 # **************************************************************************** #
 #                               OBJECT FILES                                   #
 # **************************************************************************** #
 
 MAIN_OBJ    = $(OBJ_DIR)main.o
 PARSE_OBJ   = $(addprefix $(OBJ_DIR)parsing/, $(PARSE_SRC:.c=.o))
-EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o
+EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o
+EXEC_OBJ    = $(addprefix $(OBJ_DIR)exec/, $(EXEC_SRC:.c=.o))
+BUILT_OBJ   = $(addprefix $(OBJ_DIR)builtins/, $(BUILT_SRC:.c=.o))
 
-OBJS        = $(MAIN_OBJ) $(PARSE_OBJ) $(EXPAND_OBJ)
+OBJS        = $(MAIN_OBJ) $(PARSE_OBJ) $(EXPAND_OBJ) $(EXEC_OBJ) $(BUILT_OBJ)
 
 # **************************************************************************** #
 #                                  COLORS                                      #
@@ -117,6 +141,18 @@ $(OBJ_DIR)expand_%.o: src/expand_%.c
 
 # Règle pour les objets du parsing
 $(OBJ_DIR)parsing/%.o: $(PARSE_DIR)%.c
+	@mkdir -p $(dir $@)
+	@echo "$(BLUE)🔨 Compilation de $<$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c $< -o $@
+
+# Règle pour les objets de l'exécution
+$(OBJ_DIR)exec/%.o: $(EXEC_DIR)%.c
+	@mkdir -p $(dir $@)
+	@echo "$(BLUE)🔨 Compilation de $<$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c $< -o $@
+
+# Règle pour les objets des builtins
+$(OBJ_DIR)builtins/%.o: $(BUILT_DIR)%.c
 	@mkdir -p $(dir $@)
 	@echo "$(BLUE)🔨 Compilation de $<$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c $< -o $@
