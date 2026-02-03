@@ -6,7 +6,7 @@
 #    By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/11 16:30:00 by mehdi             #+#    #+#              #
-#    Updated: 2026/01/11 16:25:12 by mehdi            ###   ########.fr        #
+#    Updated: 2026/01/13 12:43:38 by mehdi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,7 @@ MAIN_SRC    = main.c
 PARSE_SRC   = tokenize.c \
               tokenize_word.c \
               tokenize_utils.c \
+              tokenize_operators.c \
               tokenize_free.c \
               parse_commands.c \
               parse_single_cmd.c \
@@ -59,6 +60,7 @@ PARSE_SRC   = tokenize.c \
 
 # Expansion
 EXPAND_SRC  = expand_tokens.c \
+              expand_quotes.c \
               expand_utils.c \
               expand_str.c
 
@@ -92,6 +94,8 @@ PARSE_OBJ   = $(addprefix $(OBJ_DIR)parsing/, $(PARSE_SRC:.c=.o))
 EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o
 EXEC_OBJ    = $(addprefix $(OBJ_DIR)exec/, $(EXEC_SRC:.c=.o))
 BUILT_OBJ   = $(addprefix $(OBJ_DIR)builtins/, $(BUILT_SRC:.c=.o))
+EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_quotes.o \
+              $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o
 
 OBJS        = $(MAIN_OBJ) $(PARSE_OBJ) $(EXPAND_OBJ) $(EXEC_OBJ) $(BUILT_OBJ)
 

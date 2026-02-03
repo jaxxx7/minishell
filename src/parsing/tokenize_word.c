@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 14:22:41 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:05:14 by mehdi            ###   ########.fr       */
+/*   Created: 2026/01/11 14:50:00 by mehdi             #+#    #+#             */
+/*   Updated: 2026/01/11 15:00:00 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,4 @@ int	get_word_len(char *str, int start)
 			i++;
 	}
 	return (i - start);
-}
-
-char	*extract_word(char *str, int start, int len)
-{
-	char	*word;
-
-	word = ft_substr(str, start, len);
-	if (!word)
-		return (NULL);
-	return (word);
 }
