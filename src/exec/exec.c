@@ -37,9 +37,7 @@ static void	execute_single(t_cmd *cmd, char ***env)
 
 static void	execute_pipeline(t_cmd *cmds, char ***env)
 {
-	(void)cmds;
-	(void)env;
-	// TODO: Implémenter l'exécution des pipes
+	execute_pipes(cmds, env);
 }
 
 void	execute_commands(t_cmd *cmds, char ***env)
