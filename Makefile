@@ -50,6 +50,7 @@ MAIN_SRC    = main.c
 PARSE_SRC   = tokenize.c \
               tokenize_word.c \
               tokenize_utils.c \
+			  tokenize_word_utils.c \
               tokenize_operators.c \
               tokenize_free.c \
               parse_commands.c \
