@@ -61,10 +61,7 @@ static int	setup_output_redir(char *outfile, int append)
 
 static int	setup_heredoc_redir(char *heredoc_delim)
 {
-	(void)heredoc_delim;
-	// TODO: Implémenter le heredoc
-	// Utiliser handle_heredoc() de exec_heredoc.c
-	return (0);
+	return (handle_heredoc(heredoc_delim));
 }
 
 int	setup_redirections(t_cmd *cmd)
