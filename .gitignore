@@ -1,0 +1,24 @@
+# Compiled objects
+*.o
+*.a
+
+# Executable
+minishell
+
+# Object directory
+obj/
+
+# IDE/Editor
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Debug
+*.dSYM/
+
+# Tester
+minishell_tester/
