@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	handle_redir(t_cmd *cmd, t_token *token)
+int	handle_redir(t_cmd *cmd, t_token *token)
 {
 	if (!token->next || token->next->type != WORD)
 		return (0);
