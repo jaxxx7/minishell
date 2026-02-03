@@ -140,6 +140,9 @@ char	*expand_exit_status(int *i, char *result);
 // expand_str.c
 char	*expand_str(char *str, char **env);
 
+// expand_mixed.c
+char	*expand_mixed(char *str, char **env);
+
 /* ************************************************************************** */
 /*                              EXECUTION                                     */
 /* ************************************************************************** */

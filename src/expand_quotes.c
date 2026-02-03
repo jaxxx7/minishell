@@ -75,13 +75,10 @@ int	expand_no_quote(t_token *tmp, char **env)
 {
 	char	*expanded_str;
 
-	if (ft_strchr(tmp->value, '$'))
-	{
-		expanded_str = expand_str(tmp->value, env);
-		if (!expanded_str)
-			return (0);
-		free(tmp->value);
-		tmp->value = expanded_str;
-	}
+	expanded_str = expand_mixed(tmp->value, env);
+	if (!expanded_str)
+		return (0);
+	free(tmp->value);
+	tmp->value = expanded_str;
 	return (1);
 }
