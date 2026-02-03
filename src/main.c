@@ -144,9 +144,6 @@ void shell_loop(char **env)
 			continue;
 		}
 		
-		// DEBUG: Affiche les tokens
-		print_tokens(tokens);
-		
 		// ÉTAPE 2: Expansion
 		tokens = expand_tokens(tokens, env);
 		if (!tokens)
@@ -162,11 +159,8 @@ void shell_loop(char **env)
 		if (!cmds)
 			continue;
 		
-		// DEBUG: Affiche les commandes parsées
-		print_commands(cmds);
-		
-		// ÉTAPE 4: Exécution (NON IMPLÉMENTÉE)
-		printf("⚠️  Exécution non implémentée pour le moment\n\n");
+		// ÉTAPE 4: Exécution
+		execute_commands(cmds, &env);
 		
 		// Cleanup
 		free_commands(cmds);
@@ -227,21 +221,6 @@ int main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-	
-	printf("\n╔════════════════════════════════════════╗\n");
-	printf("║     MINISHELL - MODE DEBUG PARSING     ║\n");
-	printf("╚════════════════════════════════════════╝\n\n");
-	printf("✅ Tokenization implémentée\n");
-	printf("✅ Expansion implémentée\n");
-	printf("✅ Parsing implémenté\n");
-	printf("⚠️  Exécution NON implémentée\n\n");
-	printf("Commandes de test:\n");
-	printf("  • echo hello world\n");
-	printf("  • ls -la | grep test\n");
-	printf("  • cat < infile > outfile\n");
-	printf("  • echo test >> file.txt\n");
-	printf("  • cat << EOF\n\n");
-	
 	// Copie de l'environnement
 	env = copy_env(envp);
 	if (!env)
