@@ -39,13 +39,20 @@ static int	wait_for_child(pid_t pid)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			ft_putendl_fd("Quit (core dumped)", 2);
 		return (128 + WTERMSIG(status));
+	}
 	return (1);
 }
 
 int	execute_external(t_cmd *cmd, char **env)
 {
 	pid_t	pid;
+	int		ret;
 
 	pid = fork();
 	if (pid == -1)
@@ -54,6 +61,12 @@ int	execute_external(t_cmd *cmd, char **env)
 		return (1);
 	}
 	if (pid == 0)
+	{
+		setup_child_signals();
 		child_process(cmd, env);
-	return (wait_for_child(pid));
+	}
+	setup_parent_signals();
+	ret = wait_for_child(pid);
+	restore_signals();
+	return (ret);
 }

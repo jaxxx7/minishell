@@ -60,11 +60,21 @@ void	wait_all_children(pid_t *pids, int count)
 {
 	int	i;
 	int	status;
+	int	sig_printed;
 
-	i = 0;
-	while (i < count)
+	sig_printed = 0;
+	i = -1;
+	while (++i < count)
 	{
 		waitpid(pids[i], &status, 0);
+		if (WIFSIGNALED(status) && !sig_printed)
+		{
+			if (WTERMSIG(status) == SIGINT)
+				write(1, "\n", 1);
+			else if (WTERMSIG(status) == SIGQUIT)
+				ft_putendl_fd("Quit (core dumped)", 2);
+			sig_printed = 1;
+		}
 		if (i == count - 1)
 		{
 			if (WIFEXITED(status))
@@ -72,6 +82,5 @@ void	wait_all_children(pid_t *pids, int count)
 			else if (WIFSIGNALED(status))
 				g_exit_status = 128 + WTERMSIG(status);
 		}
-		i++;
 	}
 }
