@@ -17,10 +17,14 @@ int	get_quote_type(char *str)
 	int	len;
 
 	len = ft_strlen(str);
-	if (len >= 2 && str[0] == '\'' && str[len - 1] == '\'')
-		return (1);
-	if (len >= 2 && str[0] == '"' && str[len - 1] == '"')
-		return (2);
+	if (len < 2)
+		return (0);
+	if (str[0] == '\'' && str[len - 1] == '\'')
+		if (!ft_memchr(str + 1, '\'', len - 2))
+			return (1);
+	if (str[0] == '"' && str[len - 1] == '"')
+		if (!ft_memchr(str + 1, '"', len - 2))
+			return (2);
 	return (0);
 }
 
