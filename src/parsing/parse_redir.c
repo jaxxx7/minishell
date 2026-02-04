@@ -12,9 +12,30 @@
 
 #include "minishell.h"
 #include <unistd.h>
+#include <fcntl.h>
 
 static void	handle_output_redir(t_cmd *cmd, t_token *token, int append)
 {
+	int	fd;
+	int	flags;
+
+	if (cmd->redir_error)
+		return ;
+	flags = O_WRONLY | O_CREAT;
+	if (append)
+		flags |= O_APPEND;
+	else
+		flags |= O_TRUNC;
+	fd = open(token->next->value, flags, 0644);
+	if (fd == -1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(token->next->value, 2);
+		ft_putendl_fd(": Permission denied", 2);
+		cmd->redir_error = 1;
+		return ;
+	}
+	close(fd);
 	free(cmd->outfile);
 	cmd->outfile = ft_strdup(token->next->value);
 	cmd->append = append;
