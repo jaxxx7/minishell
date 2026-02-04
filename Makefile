@@ -64,7 +64,7 @@ EXPAND_SRC  = expand_tokens.c \
               expand_quotes.c \
               expand_utils.c \
               expand_str.c \
-              expand_mixed.c
+              expand_quotes_mixed.c
 
 # Execution
 EXEC_SRC    = exec.c \
