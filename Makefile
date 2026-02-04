@@ -100,7 +100,7 @@ EXEC_OBJ    = $(addprefix $(OBJ_DIR)exec/, $(EXEC_SRC:.c=.o))
 BUILT_OBJ   = $(addprefix $(OBJ_DIR)builtins/, $(BUILT_SRC:.c=.o))
 EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_quotes.o \
               $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o \
-              $(OBJ_DIR)expand_mixed.o
+              $(OBJ_DIR)expand_quotes_mixed.o
 
 OBJS        = $(MAIN_OBJ) $(PARSE_OBJ) $(EXPAND_OBJ) $(EXEC_OBJ) $(BUILT_OBJ)
 
