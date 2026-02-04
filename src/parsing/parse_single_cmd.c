@@ -38,7 +38,7 @@ static int	count_args(t_token *tokens)
 	tmp = tokens;
 	while (tmp && tmp->type != PIPE)
 	{
-		if (tmp->type == WORD)
+		if (tmp->type == WORD && tmp->value[0])
 			count++;
 		else if (tmp->type >= REDIR_IN && tmp->type <= HEREDOC)
 			tmp = tmp->next;
@@ -60,7 +60,7 @@ static int	fill_args(t_cmd *cmd, t_token *tokens)
 	i = 0;
 	while (tokens && tokens->type != PIPE)
 	{
-		if (tokens->type == WORD)
+		if (tokens->type == WORD && tokens->value[0])
 			cmd->args[i++] = ft_strdup(tokens->value);
 		else if (tokens->type >= REDIR_IN && tokens->type <= HEREDOC)
 			tokens = tokens->next;

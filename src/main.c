@@ -147,10 +147,7 @@ void shell_loop(char **env)
 		// ÉTAPE 2: Expansion
 		tokens = expand_tokens(tokens, env);
 		if (!tokens)
-		{
-			ft_putendl_fd("minishell: expansion error", 2);
 			continue;
-		}
 		
 		// ÉTAPE 3: Parsing
 		cmds = parse_commands(tokens);

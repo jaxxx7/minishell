@@ -49,7 +49,7 @@ void	execute_commands(t_cmd *cmds, char ***env)
 {
 	int	cmd_count;
 
-	if (!cmds || !cmds->args || !cmds->args[0])
+	if (!cmds || !cmds->args || !cmds->args[0] || !cmds->args[0][0])
 		return ;
 	cmd_count = count_commands(cmds);
 	if (cmd_count == 1)
