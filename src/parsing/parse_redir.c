@@ -11,28 +11,38 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <unistd.h>
+
+static void	handle_output_redir(t_cmd *cmd, t_token *token, int append)
+{
+	free(cmd->outfile);
+	cmd->outfile = ft_strdup(token->next->value);
+	cmd->append = append;
+}
+
+static void	handle_input_redir(t_cmd *cmd, char *filename)
+{
+	if (access(filename, F_OK) == -1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(filename, 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		cmd->redir_error = 1;
+	}
+	free(cmd->infile);
+	cmd->infile = ft_strdup(filename);
+}
 
 int	handle_redir(t_cmd *cmd, t_token *token)
 {
 	if (!token->next || token->next->type != WORD)
 		return (0);
 	if (token->type == REDIR_IN)
-	{
-		free(cmd->infile);
-		cmd->infile = ft_strdup(token->next->value);
-	}
+		handle_input_redir(cmd, token->next->value);
 	else if (token->type == REDIR_OUT)
-	{
-		free(cmd->outfile);
-		cmd->outfile = ft_strdup(token->next->value);
-		cmd->append = 0;
-	}
+		handle_output_redir(cmd, token, 0);
 	else if (token->type == REDIR_APPEND)
-	{
-		free(cmd->outfile);
-		cmd->outfile = ft_strdup(token->next->value);
-		cmd->append = 1;
-	}
+		handle_output_redir(cmd, token, 1);
 	else if (token->type == HEREDOC)
 	{
 		free(cmd->heredoc);

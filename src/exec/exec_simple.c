@@ -17,7 +17,7 @@ static void	child_process(t_cmd *cmd, char **env)
 {
 	char	*path;
 
-	if (setup_redirections(cmd) == -1)
+	if (cmd->redir_error || setup_redirections(cmd) == -1)
 		exit(1);
 	path = get_cmd_path(cmd->args[0], env);
 	if (!path)

@@ -50,6 +50,7 @@ typedef struct s_cmd
 	char			*outfile;
 	int				append;
 	char			*heredoc;
+	int				redir_error;
 	struct s_cmd	*next;
 }	t_cmd;
 

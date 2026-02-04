@@ -29,6 +29,11 @@ static int	count_commands(t_cmd *cmds)
 
 static void	execute_single(t_cmd *cmd, char ***env)
 {
+	if (cmd->redir_error)
+	{
+		g_exit_status = 1;
+		return ;
+	}
 	if (is_builtin(cmd->args[0]))
 		g_exit_status = execute_builtin(cmd, env);
 	else
