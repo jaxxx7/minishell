@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:04:11 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/05 15:21:02 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,15 +113,25 @@ void shell_loop(char **env)
 	char	*input;
 	t_token	*tokens;
 	t_cmd	*cmds;
+	int		interactive;
+	int		first_prompt;
 
+	interactive = isatty(STDIN_FILENO);
+	first_prompt = 1;
 	while (1)
 	{
-		input = readline("minishell> ");
+		if (!interactive && first_prompt)
+		{
+			ft_putendl_fd("minishell$ ", 1);
+			first_prompt = 0;
+		}
+		input = readline("minishell$ ");
 		
 		// Gestion de EOF (Ctrl+D)
 		if (!input)
 		{
-			write(1, "exit\n", 5);
+			if (interactive)
+				write(2, "exit\n", 5);
 			break;
 		}
 		

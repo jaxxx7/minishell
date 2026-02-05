@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/05 15:21:02 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ int	builtin_exit(char **args)
 {
 	int	exit_code;
 
-	ft_putendl_fd("exit", 1);
+	ft_putendl_fd("exit", 2);
 	if (!args[1])
 		exit(g_exit_status);
 	if (!is_numeric(args[1]))
 	{
 		print_error_arg("exit", args[1], "numeric argument required");
-		exit(2);
+		exit(255);
 	}
 	if (count_args(args) > 2)
 	{
