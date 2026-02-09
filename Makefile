@@ -44,7 +44,8 @@ LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
 # **************************************************************************** #
 
 # Main
-MAIN_SRC    = main.c
+MAIN_SRC    = main.c \
+              shell_loop.c
 
 # Parsing
 PARSE_SRC   = tokenize.c \
@@ -93,7 +94,7 @@ BUILT_SRC   = builtins.c \
 #                               OBJECT FILES                                   #
 # **************************************************************************** #
 
-MAIN_OBJ    = $(OBJ_DIR)main.o
+MAIN_OBJ    = $(OBJ_DIR)main.o $(OBJ_DIR)shell_loop.o
 PARSE_OBJ   = $(addprefix $(OBJ_DIR)parsing/, $(PARSE_SRC:.c=.o))
 EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o
 EXEC_OBJ    = $(addprefix $(OBJ_DIR)exec/, $(EXEC_SRC:.c=.o))
@@ -141,6 +142,11 @@ $(OBJ_DIR)main.o: src/main.c
 	@mkdir -p $(dir $@)
 	@echo "$(BLUE)🔨 Compilation de src/main.c$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c src/main.c -o $@
+
+$(OBJ_DIR)shell_loop.o: src/shell_loop.c
+	@mkdir -p $(dir $@)
+	@echo "$(BLUE)🔨 Compilation de src/shell_loop.c$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c src/shell_loop.c -o $@
 
 # Règle pour expand_tokens et expand_utils
 $(OBJ_DIR)expand_%.o: src/expand_%.c

@@ -236,4 +236,7 @@ int		builtin_exit(char **args);
 char	**copy_env(char **envp);
 void	free_env(char **env);
 
+// shell_loop.c
+void	shell_loop(char **env);
+
 #endif
