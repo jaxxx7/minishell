@@ -39,6 +39,16 @@ void	print_error_arg(char *cmd, char *arg, char *msg)
 	ft_putendl_fd(msg, 2);
 }
 
+void	print_exec_error(char *cmd, char *path)
+{
+	struct stat	st;
+
+	if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
+		print_error(cmd, "Is a directory");
+	else
+		print_error(cmd, strerror(errno));
+}
+
 int	error_return(char *cmd, char *msg, int ret)
 {
 	print_error(cmd, msg);

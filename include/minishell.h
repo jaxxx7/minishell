@@ -17,6 +17,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <signal.h>
+# include <string.h>
+# include <errno.h>
+# include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft.h"
@@ -180,6 +183,7 @@ pid_t	*allocate_pids(int count);
 // exec_error.c
 void	print_error(char *cmd, char *msg);
 void	print_error_arg(char *cmd, char *arg, char *msg);
+void	print_exec_error(char *cmd, char *path);
 int		error_return(char *cmd, char *msg, int ret);
 
 // exec_signals.c

@@ -26,7 +26,7 @@ static void	child_process(t_cmd *cmd, char **env)
 		exit(127);
 	}
 	execve(path, cmd->args, env);
-	print_error(cmd->args[0], "execution failed");
+	print_exec_error(cmd->args[0], path);
 	free(path);
 	exit(126);
 }
