@@ -152,7 +152,7 @@ char	*expand_mixed(char *str, char **env);
 /* ************************************************************************** */
 
 // exec.c
-void	execute_commands(t_cmd *cmds, char ***env);
+int		execute_commands(t_cmd *cmds, char ***env);
 
 // exec_simple.c
 int		execute_external(t_cmd *cmd, char **env);
@@ -184,6 +184,7 @@ pid_t	*allocate_pids(int count);
 void	print_error(char *cmd, char *msg);
 void	print_error_arg(char *cmd, char *arg, char *msg);
 void	print_exec_error(char *cmd, char *path);
+void	cmd_not_found(char *cmd);
 int		error_return(char *cmd, char *msg, int ret);
 
 // exec_signals.c
@@ -237,6 +238,6 @@ char	**copy_env(char **envp);
 void	free_env(char **env);
 
 // shell_loop.c
-void	shell_loop(char **env);
+void	shell_loop(char ***env);
 
 #endif

@@ -46,22 +46,22 @@ t_cmd	*get_cmd_at(t_cmd *cmds, int index)
 void	pipe_child_exec(t_cmd *cmd, char ***env)
 {
 	char	*path;
+	int		ret;
 
 	if (cmd->redir_error || setup_redirections(cmd) == -1)
 		exit(1);
 	if (!cmd->args || !cmd->args[0])
 		exit(0);
 	if (is_builtin(cmd->args[0]))
-		exit(execute_builtin(cmd, env));
+	{
+		ret = execute_builtin(cmd, env);
+		if (ret == -1)
+			exit(g_exit_status);
+		exit(ret);
+	}
 	path = get_cmd_path(cmd->args[0], *env);
 	if (!path)
-	{
-		if (ft_strchr(cmd->args[0], '/'))
-			print_error(cmd->args[0], "No such file or directory");
-		else
-			print_error(cmd->args[0], "command not found");
-		exit(127);
-	}
+		cmd_not_found(cmd->args[0]);
 	execve(path, cmd->args, *env);
 	print_exec_error(cmd->args[0], path);
 	free(path);

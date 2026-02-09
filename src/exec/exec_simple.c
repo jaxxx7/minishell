@@ -21,13 +21,7 @@ static void	child_process(t_cmd *cmd, char **env)
 		exit(1);
 	path = get_cmd_path(cmd->args[0], env);
 	if (!path)
-	{
-		if (ft_strchr(cmd->args[0], '/'))
-			print_error(cmd->args[0], "No such file or directory");
-		else
-			print_error(cmd->args[0], "command not found");
-		exit(127);
-	}
+		cmd_not_found(cmd->args[0]);
 	execve(path, cmd->args, env);
 	print_exec_error(cmd->args[0], path);
 	free(path);

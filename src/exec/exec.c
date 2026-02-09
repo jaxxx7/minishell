@@ -27,17 +27,25 @@ static int	count_commands(t_cmd *cmds)
 	return (count);
 }
 
-static void	execute_single(t_cmd *cmd, char ***env)
+static int	execute_single(t_cmd *cmd, char ***env)
 {
+	int	ret;
+
 	if (cmd->redir_error)
 	{
 		g_exit_status = 1;
-		return ;
+		return (0);
 	}
 	if (is_builtin(cmd->args[0]))
-		g_exit_status = execute_builtin(cmd, env);
-	else
-		g_exit_status = execute_external(cmd, *env);
+	{
+		ret = execute_builtin(cmd, env);
+		if (ret == -1)
+			return (1);
+		g_exit_status = ret;
+		return (0);
+	}
+	g_exit_status = execute_external(cmd, *env);
+	return (0);
 }
 
 static void	execute_pipeline(t_cmd *cmds, char ***env)
@@ -45,15 +53,15 @@ static void	execute_pipeline(t_cmd *cmds, char ***env)
 	execute_pipes(cmds, env);
 }
 
-void	execute_commands(t_cmd *cmds, char ***env)
+int	execute_commands(t_cmd *cmds, char ***env)
 {
 	int	cmd_count;
 
 	if (!cmds || !cmds->args || !cmds->args[0] || !cmds->args[0][0])
-		return ;
+		return (0);
 	cmd_count = count_commands(cmds);
 	if (cmd_count == 1)
-		execute_single(cmds, env);
-	else
-		execute_pipeline(cmds, env);
+		return (execute_single(cmds, env));
+	execute_pipeline(cmds, env);
+	return (0);
 }

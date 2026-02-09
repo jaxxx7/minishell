@@ -91,7 +91,7 @@ int	main(int ac, char **av, char **envp)
 		return (1);
 	}
 	setup_signals();
-	shell_loop(env);
+	shell_loop(&env);
 	free_env(env);
 	clear_history();
 	return (g_exit_status);

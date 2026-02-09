@@ -54,3 +54,12 @@ int	error_return(char *cmd, char *msg, int ret)
 	print_error(cmd, msg);
 	return (ret);
 }
+
+void	cmd_not_found(char *cmd)
+{
+	if (ft_strchr(cmd, '/'))
+		print_error(cmd, "No such file or directory");
+	else
+		print_error(cmd, "command not found");
+	exit(127);
+}

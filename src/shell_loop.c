@@ -12,28 +12,30 @@
 
 #include "minishell.h"
 
-static void	process_input(char *input, char ***env)
+static int	process_input(char *input, char ***env)
 {
 	t_token	*tokens;
 	t_cmd	*cmds;
+	int		should_exit;
 
 	add_history(input);
 	tokens = tokenize(input);
 	free(input);
 	if (!tokens)
-		return ;
+		return (0);
 	tokens = expand_tokens(tokens, *env);
 	if (!tokens)
-		return ;
+		return (0);
 	cmds = parse_commands(tokens);
 	free_tokens(tokens);
 	if (!cmds)
-		return ;
-	execute_commands(cmds, env);
+		return (0);
+	should_exit = execute_commands(cmds, env);
 	free_commands(cmds);
+	return (should_exit);
 }
 
-void	shell_loop(char **env)
+void	shell_loop(char ***env)
 {
 	char	*input;
 
@@ -50,6 +52,7 @@ void	shell_loop(char **env)
 			free(input);
 			continue ;
 		}
-		process_input(input, &env);
+		if (process_input(input, env))
+			break ;
 	}
 }

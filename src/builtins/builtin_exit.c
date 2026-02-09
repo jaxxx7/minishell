@@ -46,11 +46,12 @@ int	builtin_exit(char **args)
 
 	ft_putendl_fd("exit", 1);
 	if (!args[1])
-		exit(g_exit_status);
+		return (-1);
 	if (!is_numeric(args[1]))
 	{
 		print_error_arg("exit", args[1], "numeric argument required");
-		exit(2);
+		g_exit_status = 2;
+		return (-1);
 	}
 	if (count_args(args) > 2)
 	{
@@ -58,5 +59,6 @@ int	builtin_exit(char **args)
 		return (1);
 	}
 	exit_code = ft_atoi(args[1]);
-	exit(exit_code & 255);
+	g_exit_status = exit_code & 255;
+	return (-1);
 }
