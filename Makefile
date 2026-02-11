@@ -6,7 +6,7 @@
 #    By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/11 16:30:00 by mehdi             #+#    #+#              #
-#    Updated: 2026/01/13 12:43:38 by mehdi            ###   ########.fr        #
+#    Updated: 2026/02/11 17:09:47 by mehdi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,8 +17,9 @@
 NAME        = minishell
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -Wno-unused-function -g
-LDFLAGS     = -lreadline
+READLINE_DIR = $(shell brew --prefix readline)
+CFLAGS      = -Wall -Wextra -Werror -Wno-unused-function -g -I$(READLINE_DIR)/include
+LDFLAGS     = -L$(READLINE_DIR)/lib -lreadline
 RM          = rm -f
 
 # **************************************************************************** #

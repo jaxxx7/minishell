@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/13 12:43:23 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/11 17:09:42 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+
+extern void	rl_replace_line(const char *text, int clear_undo);
 # include "libft.h"
 
 /* ************************************************************************** */
