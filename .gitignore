@@ -23,4 +23,3 @@ obj/
 # Tester
 minishell_tester/
 outfiles/
-readline.supp
