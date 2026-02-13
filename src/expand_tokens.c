@@ -15,20 +15,22 @@
 t_token	*expand_tokens(t_token *tokens, char **env)
 {
 	t_token	*tmp;
-	int		quote_type;
+	int		qt;
 
 	tmp = tokens;
 	while (tmp)
 	{
 		if (tmp->type == WORD)
 		{
-			quote_type = get_quote_type(tmp->value);
-			if (quote_type == 1 && !expand_single_quote(tmp))
+			qt = get_quote_type(tmp->value);
+			if (qt == 1 && !expand_single_quote(tmp))
 				return (NULL);
-			else if (quote_type == 2 && !expand_double_quote(tmp, env))
+			else if (qt == 2 && !expand_double_quote(tmp, env))
 				return (NULL);
-			else if (quote_type == 0 && !expand_no_quote(tmp, env))
+			else if (qt == 0 && !expand_no_quote(tmp, env))
 				return (NULL);
+			if (!qt && !tmp->value[0])
+				tmp->type = -1;
 		}
 		tmp = tmp->next;
 	}

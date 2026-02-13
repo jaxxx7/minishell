@@ -17,14 +17,14 @@ echo $?
 #invalid command, followed by empty variable, should clear the exit code
 doesntexist
 $EMPTY
-echo $? ca clear pas
+echo $? ca clear pas -> fix
 
 # Check if there isn't a zombie process called `cat`
 echo "hi" | cat | cat | cat | cat | cat | cat | cat
 ps -a
 
 # Should skip the empty argument, and print hello after spaces
-echo - "" "  " hello 4 espace au lieu de 5 
+echo - "" "  " hello 4 espace au lieu de 5 -> fix
 
 # Neither of these unsets should break the shell, and you should still be able to call `/bin/ls`
 unset USER
