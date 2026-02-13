@@ -69,6 +69,8 @@ int	handle_redir(t_cmd *cmd, t_token *token)
 		handle_output_redir(cmd, token, 1);
 	else if (token->type == HEREDOC)
 	{
+		if (cmd->heredoc)
+			drain_heredoc(cmd->heredoc);
 		free(cmd->heredoc);
 		cmd->heredoc = ft_strdup(token->next->value);
 	}

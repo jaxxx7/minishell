@@ -167,6 +167,7 @@ int		setup_redirections(t_cmd *cmd);
 
 // exec_heredoc.c
 int		handle_heredoc(char *delimiter);
+void	drain_heredoc(char *delimiter);
 
 // exec_pipe.c
 int		execute_pipes(t_cmd *cmds, char ***env);

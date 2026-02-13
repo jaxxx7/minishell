@@ -62,3 +62,21 @@ int	handle_heredoc(char *delimiter)
 	close(pipe_fd[0]);
 	return (0);
 }
+
+void	drain_heredoc(char *delimiter)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			break ;
+		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
+		{
+			free(line);
+			break ;
+		}
+		free(line);
+	}
+}
