@@ -58,7 +58,7 @@ int	execute_commands(t_cmd *cmds, char ***env)
 	int	cmd_count;
 
 	if (!cmds || !cmds->args || !cmds->args[0] || !cmds->args[0][0])
-		return (0);
+		return (g_exit_status = 0, 0);
 	cmd_count = count_commands(cmds);
 	if (cmd_count == 1)
 		return (execute_single(cmds, env));
