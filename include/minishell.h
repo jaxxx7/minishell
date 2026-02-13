@@ -196,6 +196,7 @@ void	pipe_child_exit(t_pipe_data *data, int status);
 
 // exec_signals.c
 void	handle_sigint(int sig);
+void	herydoc_sigint(int sig);
 void	setup_child_signals(void);
 void	setup_parent_signals(void);
 void	restore_signals(void);

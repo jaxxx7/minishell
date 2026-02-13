@@ -12,16 +12,11 @@
 
 #include "minishell.h"
 
-void	handle_sigint_child(int sig)
+void	herydoc_sigint(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
-}
-
-void	handle_sigquit_child(int sig)
-{
-	(void)sig;
-	ft_putendl_fd("Quit (core dumped)", 2);
+	g_exit_status = 130;
+	close(STDIN_FILENO);
 }
 
 void	setup_child_signals(void)

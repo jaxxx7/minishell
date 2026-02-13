@@ -28,6 +28,8 @@ static int	read_heredoc_lines(int fd, char *delimiter)
 		line = readline("> ");
 		if (!line)
 		{
+			if (g_exit_status == 130)
+				return (-1);
 			print_error("warning", "here-document delimited by end-of-file");
 			break ;
 		}
@@ -51,7 +53,15 @@ int	handle_heredoc(char *delimiter)
 		print_error("pipe", "failed to create heredoc pipe");
 		return (-1);
 	}
-	read_heredoc_lines(pipe_fd[1], delimiter);
+	signal(SIGINT, herydoc_sigint);
+	if (read_heredoc_lines(pipe_fd[1], delimiter) == -1)
+	{
+		close(pipe_fd[1]);
+		close(pipe_fd[0]);
+		signal(SIGINT, SIG_DFL);
+		return (-1);
+	}
+	signal(SIGINT, SIG_DFL);
 	close(pipe_fd[1]);
 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
 	{
