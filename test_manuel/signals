@@ -1,7 +1,7 @@
 CTRL+C
 CTRL+D
 CTRL+\
-CTRL+C, CTRL+C, CTRL+C, exit problemo avec exit qui fait leak
+CTRL+C, CTRL+C, CTRL+C, exit "problemo avec exit qui fait leak" -> c'est bon c'était add_history donc readline 
 CTRL+C, CTRL+C, CTRL+C, Ctrl+D
 
 cat | ls # testar dando depois:
@@ -38,6 +38,6 @@ ls | ./test_files/loop.out
 hello + Ctrl+C
 # Check that the new line is empty
 
-exit fait un leak
+"exit fait un leak
 ctrl+d apres une cmd leak
-ctrl+\ reagis bizzarement sur un prgrm en cours quit (core dumped)
+ctrl+\ reagis bizzarement sur un prgrm en cours quit (core dumped)" -> le leak provient de rl

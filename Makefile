@@ -17,9 +17,8 @@
 NAME        = minishell
 
 CC          = cc
-READLINE_DIR = $(shell brew --prefix readline)
-CFLAGS      = -Wall -Wextra -Werror -Wno-unused-function -g -I$(READLINE_DIR)/include
-LDFLAGS     = -L$(READLINE_DIR)/lib -lreadline
+CFLAGS      = -Wall -Wextra -Werror -Wno-unused-function -g
+LDFLAGS     = -lreadline
 RM          = rm -f
 
 # **************************************************************************** #
