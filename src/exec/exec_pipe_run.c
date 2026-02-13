@@ -17,7 +17,7 @@ static void	child_process(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
 {
 	setup_child_signals();
 	setup_pipe_child(pipes, i, data->count);
-	pipe_child_exec(cmd, data->env);
+	pipe_child_exec(cmd, data);
 }
 
 static int	fork_command(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
@@ -64,33 +64,32 @@ static int	init_pipe_data(t_pipe_data *data, t_cmd *cmds, char ***env)
 	data->cmds = cmds;
 	data->env = env;
 	data->count = count_cmds(cmds);
+	data->pipes = allocate_pipes(data->count);
+	data->pids = allocate_pids(data->count);
+	if (!data->pipes || !data->pids)
+	{
+		free(data->pipes);
+		free(data->pids);
+		return (print_error("malloc", "allocation failed"), -1);
+	}
+	if (create_pipes(data->pipes, data->count) == -1)
+	{
+		free(data->pipes);
+		free(data->pids);
+		return (print_error("pipe", "failed to create pipes"), -1);
+	}
 	return (0);
 }
 
 int	execute_pipes(t_cmd *cmds, char ***env)
 {
 	t_pipe_data	data;
-	int			*pipes;
-	pid_t		*pids;
 	int			ret;
 
-	init_pipe_data(&data, cmds, env);
-	pipes = allocate_pipes(data.count);
-	pids = allocate_pids(data.count);
-	if (!pipes || !pids)
-	{
-		free(pipes);
-		free(pids);
-		return (print_error("malloc", "allocation failed"), 1);
-	}
-	if (create_pipes(pipes, data.count) == -1)
-	{
-		free(pipes);
-		free(pids);
-		return (print_error("pipe", "failed to create pipes"), 1);
-	}
-	ret = run_all_commands(&data, pipes, pids);
-	free(pipes);
-	free(pids);
+	if (init_pipe_data(&data, cmds, env) == -1)
+		return (1);
+	ret = run_all_commands(&data, data.pipes, data.pids);
+	free(data.pipes);
+	free(data.pids);
 	return (ret);
 }

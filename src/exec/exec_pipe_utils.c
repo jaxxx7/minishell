@@ -43,29 +43,32 @@ t_cmd	*get_cmd_at(t_cmd *cmds, int index)
 	return (tmp);
 }
 
-void	pipe_child_exec(t_cmd *cmd, char ***env)
+void	pipe_child_exec(t_cmd *cmd, t_pipe_data *data)
 {
 	char	*path;
 	int		ret;
 
 	if (cmd->redir_error || setup_redirections(cmd) == -1)
-		exit(1);
+		pipe_child_exit(data, 1);
 	if (!cmd->args || !cmd->args[0])
-		exit(0);
+		pipe_child_exit(data, 0);
 	if (is_builtin(cmd->args[0]))
 	{
-		ret = execute_builtin(cmd, env);
+		ret = execute_builtin(cmd, data->env);
 		if (ret == -1)
-			exit(g_exit_status);
-		exit(ret);
+			pipe_child_exit(data, g_exit_status);
+		pipe_child_exit(data, ret);
 	}
-	path = get_cmd_path(cmd->args[0], *env);
+	path = get_cmd_path(cmd->args[0], *data->env);
 	if (!path)
+	{
 		cmd_not_found(cmd->args[0]);
-	execve(path, cmd->args, *env);
+		pipe_child_exit(data, 127);
+	}
+	execve(path, cmd->args, *data->env);
 	print_exec_error(cmd->args[0], path);
 	free(path);
-	exit(126);
+	pipe_child_exit(data, 126);
 }
 
 int	*allocate_pipes(int count)

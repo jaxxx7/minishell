@@ -61,5 +61,4 @@ void	cmd_not_found(char *cmd)
 		print_error(cmd, "No such file or directory");
 	else
 		print_error(cmd, "command not found");
-	exit(127);
 }

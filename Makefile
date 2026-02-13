@@ -78,7 +78,8 @@ EXEC_SRC    = exec.c \
               exec_heredoc.c \
               exec_env.c \
               exec_signals.c \
-              exec_error.c
+              exec_error.c \
+              exec_child_utils.c
 
 # Builtins
 BUILT_SRC   = builtins.c \

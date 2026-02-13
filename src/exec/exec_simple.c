@@ -18,14 +18,17 @@ static void	child_process(t_cmd *cmd, char **env)
 	char	*path;
 
 	if (cmd->redir_error || setup_redirections(cmd) == -1)
-		exit(1);
+		child_exit(cmd, env, 1);
 	path = get_cmd_path(cmd->args[0], env);
 	if (!path)
+	{
 		cmd_not_found(cmd->args[0]);
+		child_exit(cmd, env, 127);
+	}
 	execve(path, cmd->args, env);
 	print_exec_error(cmd->args[0], path);
 	free(path);
-	exit(126);
+	child_exit(cmd, env, 126);
 }
 
 static int	wait_for_child(pid_t pid)

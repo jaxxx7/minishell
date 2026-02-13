@@ -62,6 +62,8 @@ typedef struct s_pipe_data
 	t_cmd	*cmds;
 	char	***env;
 	int		count;
+	int		*pipes;
+	pid_t	*pids;
 }	t_pipe_data;
 
 /* ************************************************************************** */
@@ -176,7 +178,7 @@ void	wait_all_children(pid_t *pids, int count);
 // exec_pipe_utils.c
 int		count_cmds(t_cmd *cmds);
 t_cmd	*get_cmd_at(t_cmd *cmds, int index);
-void	pipe_child_exec(t_cmd *cmd, char ***env);
+void	pipe_child_exec(t_cmd *cmd, t_pipe_data *data);
 int		*allocate_pipes(int count);
 pid_t	*allocate_pids(int count);
 
@@ -186,6 +188,10 @@ void	print_error_arg(char *cmd, char *arg, char *msg);
 void	print_exec_error(char *cmd, char *path);
 void	cmd_not_found(char *cmd);
 int		error_return(char *cmd, char *msg, int ret);
+
+// exec_child_utils.c
+void	child_exit(t_cmd *cmds, char **env, int status);
+void	pipe_child_exit(t_pipe_data *data, int status);
 
 // exec_signals.c
 void	handle_sigint(int sig);
