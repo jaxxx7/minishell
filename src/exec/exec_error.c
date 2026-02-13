@@ -60,5 +60,8 @@ void	cmd_not_found(char *cmd)
 	if (ft_strchr(cmd, '/'))
 		print_error(cmd, "No such file or directory");
 	else
-		print_error(cmd, "command not found");
+	{
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
 }
