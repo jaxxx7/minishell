@@ -63,14 +63,7 @@ int	handle_heredoc(char *delimiter)
 	}
 	signal(SIGINT, SIG_DFL);
 	close(pipe_fd[1]);
-	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-	{
-		close(pipe_fd[0]);
-		print_error("dup2", "failed");
-		return (-1);
-	}
-	close(pipe_fd[0]);
-	return (0);
+	return (pipe_fd[0]);
 }
 
 void	drain_heredoc(char *delimiter)

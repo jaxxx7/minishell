@@ -1,6 +1,6 @@
 cat <<HEREDOC
 oi
-HEREDOC  leak de dinguo
+HEREDOC
 
 cat <<HERE <<DOC
 oi
@@ -8,22 +8,22 @@ HERE
 time
 DOC
 
-cat <<HERE | ls
+cat <<HERE | ls                                    casse + leak le shell
 oi
 HERE
 
-cat <<HERE
+cat <<HERE                                         fonctionne pas comme il faut
 $USER
 oi
 HERE
 
-cat <minishell.h <<HERE <missing | ls
+cat <minishell.h <<HERE <missing | ls              fonctionne pas comme il faut
 HERE
 
-cat <minishell.h <<HERE | cat
-HERE
+cat <minishell.h <<HERE | cat                      fonctionne pas comme il faut
+HERE 
 
-cat <minishell.h <<HERE <missing <<DOC | echo oi
+cat <minishell.h <<HERE <missing <<DOC | echo oi   fonctionne pas comme il faut
 HERE
 DOC
 
