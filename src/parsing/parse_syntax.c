@@ -53,16 +53,16 @@ int	check_syntax(t_token *tokens)
 	if (tokens->type == PIPE)
 	{
 		ft_putendl_fd("minishell: syntax error near `|'", 2);
-		return (0);
+		return (g_exit_status = 2, 0);
 	}
 	while (tokens)
 	{
 		if (tokens->type == PIPE && !check_pipe(tokens))
-			return (0);
+			return (g_exit_status = 2, 0);
 		if (tokens->type >= REDIR_IN && tokens->type <= HEREDOC)
 		{
 			if (!check_redir(tokens))
-				return (0);
+				return (g_exit_status = 2, 0);
 		}
 		tokens = tokens->next;
 	}
