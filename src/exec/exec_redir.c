@@ -61,9 +61,11 @@ static int	setup_output_redir(char *outfile, int append)
 
 int	setup_redirections(t_cmd *cmd)
 {
+	int	fd;
+
 	if (cmd->heredoc)
 	{
-		int fd = handle_heredoc(cmd->heredoc);
+		fd = handle_heredoc(cmd->heredoc);
 		if (fd == -1)
 			return (-1);
 		if (dup2(fd, STDIN_FILENO) == -1)
@@ -74,15 +76,9 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(fd);
 	}
-	else if (cmd->infile)
-	{
-		if (setup_input_redir(cmd->infile) == -1)
-			return (-1);
-	}
-	if (cmd->outfile)
-	{
-		if (setup_output_redir(cmd->outfile, cmd->append) == -1)
-			return (-1);
-	}
+	else if (cmd->infile && setup_input_redir(cmd->infile) == -1)
+		return (-1);
+	if (cmd->outfile && setup_output_redir(cmd->outfile, cmd->append) == -1)
+		return (-1);
 	return (0);
 }
