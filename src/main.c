@@ -94,6 +94,6 @@ int	main(int ac, char **av, char **envp)
 	setup_signals();
 	shell_loop(&env);
 	free_env(env);
-	clear_history();
+	rl_clear_history();
 	return (g_exit_status);
 }
