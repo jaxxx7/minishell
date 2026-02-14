@@ -1,0 +1,40 @@
+cat <<HERE | ls                                    casse + leak le shell
+oi
+HERE
+
+cat <<HERE                                         fonctionne pas comme il faut
+$USER
+oi
+HERE
+
+cat <minishell.h <<HERE <missing | ls              fonctionne pas comme il faut
+HERE
+
+cat <minishell.h <<HERE | cat                      fonctionne pas comme il faut
+HERE 
+
+cat <minishell.h <<HERE <missing <<DOC | echo oi   fonctionne pas comme il faut
+HERE
+DOC
+
+
+1. Unclosed quotes — MANQUANT
+Le sujet dit : "Not interpret unclosed quotes". Actuellement, echo "hello supprime silencieusement le guillemet et affiche hello. Il faut détecter et refuser les quotes non fermées avec une erreur et $? = 2.
+
+2. Syntax errors ne set pas $? à 2 — ISSUE
+Dans parse_syntax.c, les erreurs de syntaxe (| cmd, > >) affichent un message mais ne mettent jamais g_exit_status = 2. Bash le fait.
+
+3. export sans argument — affichage incorrect — ISSUE
+export seul affiche declare -x VAR=value au lieu de declare -x VAR="value" (les valeurs doivent être entre guillemets). L'ordre alphabétique est aussi attendu par bash.
+
+4 FIX . Ordre des redirections < / << non préservé — ISSUE
+setup_redirections() applique toujours heredoc en premier, puis infile. Donc cat < file << EOF utilise file au lieu du heredoc. La dernière redirection d'entrée (de gauche à droite) devrait gagner.
+
+5 FIX . Signal non restauré après heredoc builtin — ISSUE
+Après un heredoc dans un builtin sans fork (ex: echo << EOF), le signal SIGINT est mis à SIG_DFL mais jamais restauré à handle_sigint. Un Ctrl+C après ça tue le shell au lieu d'afficher un nouveau prompt.
+
+6 FIX . exit overflow — mineur
+ft_atoi() ne détecte pas l'overflow. exit 9999999999999999999 devrait afficher "numeric argument required" et quitter avec 2, comme bash. 
+
+7. Heredocs dans pipelines — ISSUE
+Avec cat << A | grep << B, les enfants lisent les heredocs en parallèle (race condition). Bash lit tous les heredocs séquentiellement avant de fork.
