@@ -22,6 +22,7 @@
 # include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <limits.h>
 # include "libft.h"
 
 /* ************************************************************************** */
