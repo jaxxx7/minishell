@@ -53,6 +53,7 @@ static int	run_all_commands(t_pipe_data *data, int *pipes, pid_t *pids)
 		}
 		i++;
 	}
+	close_heredocs(data->cmds);
 	close_pipes(pipes, data->count);
 	wait_all_children(pids, data->count);
 	restore_signals();

@@ -27,3 +27,16 @@ void	pipe_child_exit(t_pipe_data *data, int status)
 	free(data->pids);
 	exit(status);
 }
+
+void	close_heredocs(t_cmd *cmds)
+{
+	t_cmd	*current;
+
+	current = cmds;
+	while (current)
+	{
+		if (current->heredoc_fd != -1)
+			close(current->heredoc_fd);
+		current = current->next;
+	}
+}

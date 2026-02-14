@@ -61,20 +61,15 @@ static int	setup_output_redir(char *outfile, int append)
 
 int	setup_redirections(t_cmd *cmd)
 {
-	int	fd;
-
-	if (cmd->heredoc)
+	if (cmd->heredoc_fd != -1)
 	{
-		fd = handle_heredoc(cmd->heredoc);
-		if (fd == -1)
-			return (-1);
-		if (dup2(fd, STDIN_FILENO) == -1)
+		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
 		{
-			close(fd);
+			close(cmd->heredoc_fd);
 			print_error("dup2", "failed");
 			return (-1);
 		}
-		close(fd);
+		close(cmd->heredoc_fd);
 	}
 	else if (cmd->infile && setup_input_redir(cmd->infile) == -1)
 		return (-1);

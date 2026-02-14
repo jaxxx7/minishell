@@ -39,6 +39,8 @@ void	free_single_cmd(t_cmd *cmd)
 		free(cmd->outfile);
 	if (cmd->heredoc)
 		free(cmd->heredoc);
+	if (cmd->heredoc_fd != -1)
+		close(cmd->heredoc_fd);
 	free(cmd);
 }
 

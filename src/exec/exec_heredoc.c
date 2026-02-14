@@ -83,3 +83,20 @@ void	drain_heredoc(char *delimiter)
 		free(line);
 	}
 }
+
+void	prepare_heredocs(t_cmd *cmds)
+{
+	t_cmd	*current;
+
+	current = cmds;
+	while (current)
+	{
+		if (current->heredoc)
+		{
+			current->heredoc_fd = handle_heredoc(current->heredoc);
+			free(current->heredoc);
+			current->heredoc = NULL;
+		}
+		current = current->next;
+	}
+}

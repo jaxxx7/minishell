@@ -54,6 +54,7 @@ typedef struct s_cmd
 	char			*outfile;
 	int				append;
 	char			*heredoc;
+	int				heredoc_fd;
 	int				redir_error;
 	struct s_cmd	*next;
 }	t_cmd;
@@ -194,6 +195,7 @@ int		error_return(char *cmd, char *msg, int ret);
 // exec_child_utils.c
 void	child_exit(t_cmd *cmds, char **env, int status);
 void	pipe_child_exit(t_pipe_data *data, int status);
+void	close_heredocs(t_cmd *cmds);
 
 // exec_signals.c
 void	handle_sigint(int sig);
@@ -201,6 +203,9 @@ void	herydoc_sigint(int sig);
 void	setup_child_signals(void);
 void	setup_parent_signals(void);
 void	restore_signals(void);
+
+// exec_heredoc.c
+void	prepare_heredocs(t_cmd *cmds);
 
 // exec_env.c
 int		get_env_index(char *name, char **env);

@@ -24,6 +24,7 @@ static t_cmd	*init_cmd(void)
 	cmd->outfile = NULL;
 	cmd->append = 0;
 	cmd->heredoc = NULL;
+	cmd->heredoc_fd = -1;
 	cmd->redir_error = 0;
 	cmd->next = NULL;
 	return (cmd);

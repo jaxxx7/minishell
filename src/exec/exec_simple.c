@@ -66,6 +66,8 @@ int	execute_external(t_cmd *cmd, char **env)
 		child_process(cmd, env);
 	}
 	setup_parent_signals();
+	if (cmd->heredoc_fd != -1)
+		close(cmd->heredoc_fd);
 	ret = wait_for_child(pid);
 	restore_signals();
 	return (ret);
