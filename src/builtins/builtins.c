@@ -73,5 +73,6 @@ int	execute_builtin(t_cmd *cmd, char ***env)
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdin);
 	close(saved_stdout);
+	restore_signals();
 	return (ret);
 }
