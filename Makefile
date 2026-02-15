@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+         #
+#    By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/11 16:30:00 by mehdi             #+#    #+#              #
-#    Updated: 2026/02/11 17:09:47 by mehdi            ###   ########.fr        #
+#    Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,9 @@ LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
 
 # Main
 MAIN_SRC    = main.c \
-              shell_loop.c
+			  shell_loop.c \
+			  env_utils.c \
+			  exit_status.c
 
 # Parsing
 PARSE_SRC   = tokenize.c \
@@ -73,6 +75,8 @@ EXEC_SRC    = exec.c \
               exec_path.c \
               exec_pipe.c \
               exec_pipe_utils.c \
+			  exec_pipe_child.c \
+			  exec_pipe_errors.c \
               exec_pipe_run.c \
               exec_redir.c \
               exec_heredoc.c \
@@ -95,7 +99,8 @@ BUILT_SRC   = builtins.c \
 #                               OBJECT FILES                                   #
 # **************************************************************************** #
 
-MAIN_OBJ    = $(OBJ_DIR)main.o $(OBJ_DIR)shell_loop.o
+MAIN_OBJ    = $(OBJ_DIR)main.o $(OBJ_DIR)shell_loop.o \
+			  $(OBJ_DIR)env_utils.o $(OBJ_DIR)exit_status.o
 PARSE_OBJ   = $(addprefix $(OBJ_DIR)parsing/, $(PARSE_SRC:.c=.o))
 EXPAND_OBJ  = $(OBJ_DIR)expand_tokens.o $(OBJ_DIR)expand_utils.o $(OBJ_DIR)expand_str.o
 EXEC_OBJ    = $(addprefix $(OBJ_DIR)exec/, $(EXEC_SRC:.c=.o))
@@ -148,6 +153,16 @@ $(OBJ_DIR)shell_loop.o: src/shell_loop.c
 	@mkdir -p $(dir $@)
 	@echo "$(BLUE)🔨 Compilation de src/shell_loop.c$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c src/shell_loop.c -o $@
+
+$(OBJ_DIR)env_utils.o: src/env_utils.c
+	@mkdir -p $(dir $@)
+	@echo "$(BLUE)🔨 Compilation de src/env_utils.c$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c src/env_utils.c -o $@
+
+$(OBJ_DIR)exit_status.o: src/exit_status.c
+	@mkdir -p $(dir $@)
+	@echo "$(BLUE)🔨 Compilation de src/exit_status.c$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBFT_DIR) -c src/exit_status.c -o $@
 
 # Règle pour expand_tokens et expand_utils
 $(OBJ_DIR)expand_%.o: src/expand_%.c
