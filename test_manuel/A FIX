@@ -2,7 +2,7 @@ cat <<HERE | ls                                    casse + leak le shell        
 oi
 HERE
 
-cat <<HERE                                         fonctionne pas comme il faut
+cat <<HERE                                         fonctionne pas comme il faut		fix
 $USER
 oi
 HERE
@@ -24,7 +24,7 @@ Le sujet dit : "Not interpret unclosed quotes". Actuellement, echo "hello suppri
 2 FIX . Syntax errors ne set pas $? à 2 — ISSUE
 Dans parse_syntax.c, les erreurs de syntaxe (| cmd, > >) affichent un message mais ne mettent jamais g_exit_status = 2. Bash le fait.
 
-3. export sans argument — affichage incorrect — ISSUE
+3 FIX. export sans argument — affichage incorrect — ISSUE
 export seul affiche declare -x VAR=value au lieu de declare -x VAR="value" (les valeurs doivent être entre guillemets). L'ordre alphabétique est aussi attendu par bash.
 
 4 FIX . Ordre des redirections < / << non préservé — ISSUE
