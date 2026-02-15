@@ -1,4 +1,4 @@
-cat <<HERE | ls                                    casse + leak le shell           fix
+cat <<HERE | ls                                    casse + leak le shell          	fix
 oi
 HERE
 
@@ -10,10 +10,10 @@ HERE
 cat <minishell.h <<HERE <missing | ls              fonctionne pas comme il faut
 HERE
 
-cat <minishell.h <<HERE | cat                      fonctionne pas comme il faut
+cat <minishell.h <<HERE | cat                      fonctionne pas comme il faut		fix
 HERE 
 
-cat <minishell.h <<HERE <missing <<DOC | echo oi   fonctionne pas comme il faut
+cat <minishell.h <<HERE <missing <<DOC | echo oi   fonctionne pas comme il faut   	fix
 HERE
 DOC
 
@@ -36,5 +36,5 @@ Après un heredoc dans un builtin sans fork (ex: echo << EOF), le signal SIGINT 
 6 FIX . exit overflow — mineur
 ft_atoi() ne détecte pas l'overflow. exit 9999999999999999999 devrait afficher "numeric argument required" et quitter avec 2, comme bash. 
 
-7. Heredocs dans pipelines — ISSUE
+7 FIX . Heredocs dans pipelines — ISSUE
 Avec cat << A | grep << B, les enfants lisent les heredocs en parallèle (race condition). Bash lit tous les heredocs séquentiellement avant de fork.
