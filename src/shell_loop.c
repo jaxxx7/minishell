@@ -30,7 +30,11 @@ static int	process_input(char *input, char ***env)
 	free_tokens(tokens);
 	if (!cmds)
 		return (0);
-	prepare_heredocs(cmds);
+	if (prepare_heredocs(cmds) == -1)
+	{
+		free_commands(cmds);
+		return (0);
+	}
 	should_exit = execute_commands(cmds, env);
 	free_commands(cmds);
 	return (should_exit);

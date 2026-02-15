@@ -205,7 +205,7 @@ void	setup_parent_signals(void);
 void	restore_signals(void);
 
 // exec_heredoc.c
-void	prepare_heredocs(t_cmd *cmds);
+int		prepare_heredocs(t_cmd *cmds);
 
 // exec_env.c
 int		get_env_index(char *name, char **env);

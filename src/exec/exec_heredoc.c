@@ -29,7 +29,9 @@ static int	read_heredoc_lines(int fd, char *delimiter)
 		if (!line)
 		{
 			if (g_exit_status == 130)
+			{
 				return (-1);
+			}
 			print_error("warning", "here-document delimited by end-of-file");
 			break ;
 		}
@@ -47,21 +49,26 @@ static int	read_heredoc_lines(int fd, char *delimiter)
 int	handle_heredoc(char *delimiter)
 {
 	int	pipe_fd[2];
+	int	stdin_copy;
 
 	if (pipe(pipe_fd) == -1)
 	{
 		print_error("pipe", "failed to create heredoc pipe");
 		return (-1);
 	}
+	stdin_copy = dup(STDIN_FILENO);
 	signal(SIGINT, herydoc_sigint);
 	if (read_heredoc_lines(pipe_fd[1], delimiter) == -1)
 	{
 		close(pipe_fd[1]);
 		close(pipe_fd[0]);
-		signal(SIGINT, SIG_DFL);
+		dup2(stdin_copy, STDIN_FILENO);
+		close(stdin_copy);
+		signal(SIGINT, handle_sigint);
 		return (-1);
 	}
-	signal(SIGINT, SIG_DFL);
+	close(stdin_copy);
+	signal(SIGINT, handle_sigint);
 	close(pipe_fd[1]);
 	return (pipe_fd[0]);
 }
@@ -84,7 +91,7 @@ void	drain_heredoc(char *delimiter)
 	}
 }
 
-void	prepare_heredocs(t_cmd *cmds)
+int	prepare_heredocs(t_cmd *cmds)
 {
 	t_cmd	*current;
 
@@ -96,7 +103,10 @@ void	prepare_heredocs(t_cmd *cmds)
 			current->heredoc_fd = handle_heredoc(current->heredoc);
 			free(current->heredoc);
 			current->heredoc = NULL;
+			if (current->heredoc_fd == -1)
+				return (-1);
 		}
 		current = current->next;
 	}
+	return (0);
 }

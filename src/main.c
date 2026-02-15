@@ -19,16 +19,17 @@ int	g_exit_status = 0;
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
+	g_exit_status = 130;
+	write(1, "^C\n", 3);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_exit_status = 130;
 }
 
 // Initialisation des signaux
 void	setup_signals(void)
 {
+	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }

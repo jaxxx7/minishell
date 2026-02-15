@@ -16,6 +16,7 @@ void	herydoc_sigint(int sig)
 {
 	(void)sig;
 	g_exit_status = 130;
+	write(1, "^C", 2);
 	close(STDIN_FILENO);
 }
 
