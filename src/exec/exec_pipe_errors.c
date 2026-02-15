@@ -1,38 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_signals.c                                     :+:      :+:    :+:   */
+/*   exec_pipe_errors.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/15 15:04:49 by mhachem          ###   ########.fr       */
+/*   Created: 2026/02/15 15:35:00 by mhachem           #+#    #+#             */
+/*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	herydoc_sigint(int sig)
+void	print_pipeline_redir_errors(t_cmd *cmds)
 {
-	g_signal = sig;
-	write(1, "^C", 2);
-	close(STDIN_FILENO);
-}
-
-void	setup_child_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-void	setup_parent_signals(void)
-{
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	restore_signals(void)
-{
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	while (cmds)
+	{
+		if (cmds->redir_error && cmds->redir_err_file && cmds->redir_err_msg)
+			print_error(cmds->redir_err_file, cmds->redir_err_msg);
+		cmds = cmds->next;
+	}
 }

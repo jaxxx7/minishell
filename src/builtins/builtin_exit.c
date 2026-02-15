@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 15:04:49 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	builtin_exit(char **args)
 	if (!is_numeric(args[1]) || overflow)
 	{
 		print_error_arg("exit", args[1], "numeric argument required");
-		g_exit_status = 2;
+		set_exit_status(2);
 		return (-1);
 	}
 	if (count_args(args) > 2)
@@ -102,6 +102,6 @@ int	builtin_exit(char **args)
 		print_error("exit", "too many arguments");
 		return (1);
 	}
-	g_exit_status = (int)(exit_code & 255);
+	set_exit_status((int)(exit_code & 255));
 	return (-1);
 }

@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/15 14:13:30 by mhachem          ###   ########.fr       */
+/*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ typedef struct s_pipe_data
 /*                           GLOBAL VARIABLE                                  */
 /* ************************************************************************** */
 
-extern int	g_exit_status;
+extern volatile sig_atomic_t	g_signal;
+
+int		get_exit_status(void);
+void	set_exit_status(int status);
 
 /* ************************************************************************** */
 /*                           TOKENIZATION                                     */
@@ -186,6 +189,7 @@ void	wait_all_children(pid_t *pids, int count);
 int		count_cmds(t_cmd *cmds);
 t_cmd	*get_cmd_at(t_cmd *cmds, int index);
 void	pipe_child_exec(t_cmd *cmd, t_pipe_data *data);
+void	print_pipeline_redir_errors(t_cmd *cmds);
 int		*allocate_pipes(int count);
 pid_t	*allocate_pids(int count);
 

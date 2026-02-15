@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/03 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 15:04:49 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ void	wait_all_children(pid_t *pids, int count)
 		if (i == count - 1)
 		{
 			if (WIFEXITED(status))
-				g_exit_status = WEXITSTATUS(status);
+				set_exit_status(WEXITSTATUS(status));
 			else if (WIFSIGNALED(status))
-				g_exit_status = 128 + WTERMSIG(status);
+				set_exit_status(128 + WTERMSIG(status));
 		}
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:53:56 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:11:14 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 15:04:49 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*expand_exit_status(int *i, char *result)
 {
 	char	*status_str;
 
-	status_str = ft_itoa(g_exit_status);
+	status_str = ft_itoa(get_exit_status());
 	if (!status_str)
 		return (free(result), NULL);
 	result = strjoin_free_s1(result, status_str);

@@ -3,23 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:04:11 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Variable globale pour l'exit status
-int	g_exit_status = 0;
+volatile sig_atomic_t	g_signal = 0;
 
 // Gestion du signal Ctrl+C (SIGINT)
 void	handle_sigint(int sig)
 {
-	(void)sig;
-	g_exit_status = 130;
+	g_signal = sig;
 	write(1, "^C\n", 3);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -32,52 +30,6 @@ void	setup_signals(void)
 	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
-}
-
-// Copie de l'environnement
-char	**copy_env(char **envp)
-{
-	char	**env_copy;
-	int		i;
-	int		count;
-
-	count = 0;
-	while (envp[count])
-		count++;
-	env_copy = malloc(sizeof(char *) * (count + 1));
-	if (!env_copy)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		env_copy[i] = ft_strdup(envp[i]);
-		if (!env_copy[i])
-		{
-			while (i > 0)
-				free(env_copy[--i]);
-			free(env_copy);
-			return (NULL);
-		}
-		i++;
-	}
-	env_copy[count] = NULL;
-	return (env_copy);
-}
-
-// Libération de l'environnement
-void	free_env(char **env)
-{
-	int	i;
-
-	if (!env)
-		return ;
-	i = 0;
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -96,5 +48,5 @@ int	main(int ac, char **av, char **envp)
 	shell_loop(&env);
 	free_env(env);
 	rl_clear_history();
-	return (g_exit_status);
+	return (get_exit_status());
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:20:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 16:24:01 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 15:08:11 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,24 @@ int	check_redir(t_token *token)
 	return (1);
 }
 
+static int	syntax_error_ret(void)
+{
+	set_exit_status(2);
+	return (0);
+}
+
+static int	check_token_syntax(t_token *tokens)
+{
+	if (tokens->type == PIPE && !check_pipe(tokens))
+		return (syntax_error_ret());
+	if (tokens->type >= REDIR_IN && tokens->type <= HEREDOC)
+	{
+		if (!check_redir(tokens))
+			return (syntax_error_ret());
+	}
+	return (1);
+}
+
 int	check_syntax(t_token *tokens)
 {
 	if (!tokens)
@@ -53,17 +71,12 @@ int	check_syntax(t_token *tokens)
 	if (tokens->type == PIPE)
 	{
 		ft_putendl_fd("minishell: syntax error near `|'", 2);
-		return (g_exit_status = 2, 0);
+		return (syntax_error_ret());
 	}
 	while (tokens)
 	{
-		if (tokens->type == PIPE && !check_pipe(tokens))
-			return (g_exit_status = 2, 0);
-		if (tokens->type >= REDIR_IN && tokens->type <= HEREDOC)
-		{
-			if (!check_redir(tokens))
-				return (g_exit_status = 2, 0);
-		}
+		if (!check_token_syntax(tokens))
+			return (0);
 		tokens = tokens->next;
 	}
 	return (1);

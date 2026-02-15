@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 15:04:49 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ static int	read_heredoc_lines(int fd, char *delimiter)
 		line = readline("> ");
 		if (!line)
 		{
-			if (g_exit_status == 130)
+			if (g_signal == SIGINT)
 			{
+				set_exit_status(130);
+				g_signal = 0;
 				return (-1);
 			}
 			print_error("warning", "here-document delimited by end-of-file");

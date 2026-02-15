@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
+/*   Updated: 2026/02/15 15:08:11 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,8 @@ static int	setup_output_redir(char *outfile, int append)
 	return (0);
 }
 
-int	setup_redirections(t_cmd *cmd)
+static int	setup_input_choice(t_cmd *cmd)
 {
-	if (cmd->redir_error)
-	{
-		print_error(cmd->redir_err_file, cmd->redir_err_msg);
-		return (-1);
-	}
 	if (cmd->input_type == HEREDOC && cmd->heredoc_fd != -1)
 	{
 		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
@@ -79,11 +74,28 @@ int	setup_redirections(t_cmd *cmd)
 	else if (cmd->input_type == REDIR_IN && cmd->infile
 		&& setup_input_redir(cmd->infile) == -1)
 		return (-1);
+	return (0);
+}
+
+static void	close_unused_heredoc(t_cmd *cmd)
+{
 	if (cmd->input_type != HEREDOC && cmd->heredoc_fd != -1)
 	{
 		close(cmd->heredoc_fd);
 		cmd->heredoc_fd = -1;
 	}
+}
+
+int	setup_redirections(t_cmd *cmd)
+{
+	if (cmd->redir_error)
+	{
+		print_error(cmd->redir_err_file, cmd->redir_err_msg);
+		return (-1);
+	}
+	if (setup_input_choice(cmd) == -1)
+		return (-1);
+	close_unused_heredoc(cmd);
 	if (cmd->outfile && setup_output_redir(cmd->outfile, cmd->append) == -1)
 		return (-1);
 	return (0);

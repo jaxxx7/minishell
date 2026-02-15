@@ -1,68 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_pipe_utils.c                                  :+:      :+:    :+:   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/03 10:00:00 by yanisubu          #+#    #+#             */
+/*   Created: 2026/02/15 15:35:00 by mhachem           #+#    #+#             */
 /*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <sys/wait.h>
 
-int	count_cmds(t_cmd *cmds)
+char	**copy_env(char **envp)
 {
+	char	**env_copy;
+	int		i;
 	int		count;
-	t_cmd	*tmp;
 
 	count = 0;
-	tmp = cmds;
-	while (tmp)
-	{
+	while (envp[count])
 		count++;
-		tmp = tmp->next;
-	}
-	return (count);
-}
-
-t_cmd	*get_cmd_at(t_cmd *cmds, int index)
-{
-	int		i;
-	t_cmd	*tmp;
-
+	env_copy = malloc(sizeof(char *) * (count + 1));
+	if (!env_copy)
+		return (NULL);
 	i = 0;
-	tmp = cmds;
-	while (tmp && i < index)
+	while (i < count)
 	{
-		tmp = tmp->next;
+		env_copy[i] = ft_strdup(envp[i]);
+		if (!env_copy[i])
+		{
+			while (i > 0)
+				free(env_copy[--i]);
+			free(env_copy);
+			return (NULL);
+		}
 		i++;
 	}
-	return (tmp);
+	env_copy[count] = NULL;
+	return (env_copy);
 }
 
-int	*allocate_pipes(int count)
+void	free_env(char **env)
 {
-	int	*pipes;
-	int	num_pipes;
+	int	i;
 
-	num_pipes = count - 1;
-	if (num_pipes <= 0)
-		return (NULL);
-	pipes = malloc(sizeof(int) * num_pipes * 2);
-	if (!pipes)
-		return (NULL);
-	return (pipes);
-}
-
-pid_t	*allocate_pids(int count)
-{
-	pid_t	*pids;
-
-	pids = malloc(sizeof(pid_t) * count);
-	if (!pids)
-		return (NULL);
-	return (pids);
+	if (!env)
+		return ;
+	i = 0;
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
 }
