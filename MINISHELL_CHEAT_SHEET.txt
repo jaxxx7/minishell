@@ -1,0 +1,348 @@
+MINISHELL — CHEAT SHEET (mode soutenance 42, version impitoyable)
+Date: 15/02/2026
+
+============================================================
+1) FLUX D’EXÉCUTION VULGARISÉ (de la ligne saisie à l’exécution)
+============================================================
+
+1. Readline récupère la commande utilisateur (`shell_loop`).
+2. Tokenization: la string est découpée en tokens chaînés (`t_token`) : mots, pipes, redirections (`tokenize*`).
+3. Expansion: sur les `WORD`, le shell gère quotes + `$VAR` + `$?` (`expand_*`).
+   - `'...'` => pas d’expansion
+   - `"..."` => expansion autorisée
+   - non quoté / mixte => expansion morceau par morceau
+4. Parsing: les tokens deviennent une liste de commandes (`t_cmd`), une commande par segment de pipeline (`parse_*`).
+   - Vérification de syntaxe (`|` mal placé, redirection sans cible, etc.)
+   - Construction de `args`, `infile`, `outfile`, `heredoc`
+5. Heredoc préparés avant exécution (`prepare_heredocs`): chaque heredoc est lu, stocké dans un pipe, puis attaché au `t_cmd` via `heredoc_fd`.
+6. Dispatch exécution (`execute_commands`):
+   - 1 seule commande builtin => exécutée dans le parent (pour modifier l’état shell)
+   - sinon pipeline => fork des enfants + connexions pipes + exec/builtin côté enfant
+7. Attente des enfants (`waitpid`) et mise à jour de `g_exit_status`.
+8. Libération mémoire de la ligne courante (`tokens`, `cmds`), puis boucle suivante.
+
+Mini vision mentale:
+input -> tokens -> expansion -> cmds -> heredoc fd -> exec (builtin/external/pipe) -> wait -> g_exit_status
+
+
+============================================================
+2) STRUCTURES DE DONNÉES PRINCIPALES (et pourquoi elles existent)
+============================================================
+
+A) `t_token`
+- Champs: `value`, `type`, `next`.
+- Rôle: représentation linéaire de la ligne utilisateur, avant parsing final.
+- Cycle mémoire: alloué pendant tokenization, éventuellement modifié par expansion, puis libéré par `free_tokens`.
+
+B) `t_cmd`
+- Champs:
+  - `args` : argv prêt pour builtin/execve
+  - `infile`, `outfile`, `append` : redirections
+  - `heredoc`, `heredoc_fd` : delimiter puis FD réel
+  - `redir_error` : drapeau d’erreur de redirection
+  - `next` : pipeline chaîné
+- Rôle: unité d’exécution (une commande logique) utilisée par exec.
+- Cycle mémoire: créé au parsing, enrichi par heredoc prep, consommé par l’exécution, libéré par `free_commands`.
+
+C) `t_pipe_data`
+- Champs: `cmds`, `env`, `count`, `pipes`, `pids`.
+- Rôle: contexte runtime pour exécuter un pipeline multi-process.
+- Cycle mémoire: alloué dans `execute_pipes`, utilisé pendant fork/wait, libéré juste après.
+
+D) `char **env`
+- Rôle: environnement shell mutable.
+- Cycle mémoire: copie profonde au démarrage (`copy_env`), modifiée par `export/unset/cd`, libérée à la fin (`free_env`).
+
+E) `g_exit_status`
+- Rôle: état global de retour, lu par `$?` et écrit par erreurs/signaux/wait/builtins.
+- Important soutenance: il est la “source de vérité” du status shell entre 2 prompts.
+
+
+============================================================
+3) RÔLE DE CHAQUE FICHIER .c (1 phrase max par fichier)
+============================================================
+
+----- src (projet minishell) -----
+
+src/main.c
+- Initialise les signaux et la copie d’environnement, lance la boucle shell, puis nettoie tout à la sortie.
+
+src/shell_loop.c
+- Ordonne le pipeline d’une ligne utilisateur: history -> tokenize -> expand -> parse -> heredoc -> execute.
+
+src/expand_tokens.c
+- Applique la logique d’expansion sur chaque token `WORD` selon son contexte de quotes.
+
+src/expand_quotes.c
+- Détecte quote simple/double complètes, retire les quotes et lance l’expansion adaptée.
+
+src/expand_quotes_mixed.c
+- Gère les chaînes mixtes (morceaux quotés/non quotés) en concaténant segments expansés et non expansés.
+
+src/expand_str.c
+- Remplace `$VAR` et `$?` dans une chaîne en respectant la grammaire des noms de variables.
+
+src/expand_utils.c
+- Fournit les utilitaires d’expansion (lookup env, longueur variable, concat avec free, expansion de `$?`).
+
+src/parsing/tokenize.c
+- Découpe l’entrée brute en tokens en ignorant les espaces et en routant mot vs opérateur.
+
+src/parsing/tokenize_utils.c
+- Crée les tokens, les chaîne dans la liste, et gère la routine `process_token`.
+
+src/parsing/tokenize_operators.c
+- Extrait et typpe les opérateurs `|`, `<`, `>`, `<<`, `>>`.
+
+src/parsing/tokenize_word.c
+- Calcule la longueur d’un mot en sautant correctement les zones entre quotes.
+
+src/parsing/tokenize_word_utils.c
+- Extrait le contenu texte d’un mot tokenisé via sous-chaîne.
+
+src/parsing/tokenize_free.c
+- Libère toute la liste chaînée de tokens (value + maillons).
+
+src/parsing/parse_commands.c
+- Vérifie la syntaxe globale puis construit la liste de commandes séparées par pipes.
+
+src/parsing/parse_single_cmd.c
+- Initialise une commande, lit ses redirections, et construit son `argv`.
+
+src/parsing/parse_redir.c
+- Interprète les redirections d’un segment et remplit `infile/outfile/append/heredoc`.
+
+src/parsing/parse_syntax.c
+- Rejette les formes syntaxiques invalides (pipe mal placé, redirection sans cible) et met status 2.
+
+src/parsing/parse_free.c
+- Libère une commande ou une liste de commandes, y compris args et FDs heredoc ouverts.
+
+src/exec/exec.c
+- Décide entre exécution simple (builtin/external) et exécution pipeline.
+
+src/exec/exec_simple.c
+- Exécute une commande externe seule via fork + redirections + execve + wait.
+
+src/exec/exec_redir.c
+- Applique techniquement les redirections (dup2/open) pour stdin/stdout.
+
+src/exec/exec_path.c
+- Résout le binaire via chemin explicite ou recherche dans PATH.
+
+src/exec/exec_error.c
+- Centralise les messages d’erreur d’exécution et les helpers de retour d’erreur.
+
+src/exec/exec_pipe.c
+- Crée/ferme les pipes, connecte stdin/stdout des enfants, et attend tous les processus.
+
+src/exec/exec_pipe_utils.c
+- Contient les utilitaires pipeline (count/get by index, alloc tableaux, routine enfant).
+
+src/exec/exec_pipe_run.c
+- Lance la boucle de fork pipeline, ferme les FDs parent, attend et restaure les signaux.
+
+src/exec/exec_child_utils.c
+- Gère les sorties propres côté enfant (free + exit) et la fermeture des heredocs.
+
+src/exec/exec_heredoc.c
+- Lit les heredocs, les stocke dans des pipes et prépare `heredoc_fd` avant exécution.
+
+src/exec/exec_signals.c
+- Définit les comportements SIGINT/SIGQUIT pour parent, enfant et mode heredoc.
+
+src/exec/exec_env.c
+- Implémente les primitives de lecture/ajout/modification/suppression de variables d’environnement.
+
+src/builtins/builtins.c
+- Détecte les builtins et les exécute avec sauvegarde/restauration de stdin/stdout.
+
+src/builtins/builtin_echo.c
+- Implémente `echo` avec support des options `-n` répétées.
+
+src/builtins/builtin_cd.c
+- Implémente `cd` (`HOME`, `OLDPWD`, `-`) et maintient `PWD/OLDPWD`.
+
+src/builtins/builtin_pwd.c
+- Implémente `pwd` via `getcwd` et affiche le répertoire courant.
+
+src/builtins/builtin_export.c
+- Implémente `export` avec validation d’identifiants et insertion/mise à jour dans l’environnement.
+
+src/builtins/builtin_unset.c
+- Implémente `unset` avec validation d’identifiants et suppression des entrées env.
+
+src/builtins/builtin_env.c
+- Implémente `env` en affichant les variables contenant `=`.
+
+src/builtins/builtin_exit.c
+- Implémente `exit` avec validation numérique, gestion overflow et comportement multi-arguments.
+
+
+----- libft (bibliothèque utilitaire) -----
+
+libft/ft_atoi.c
+- Convertit une chaîne en entier (`int`) avec gestion des espaces/signe.
+
+libft/ft_bzero.c
+- Met une zone mémoire à zéro.
+
+libft/ft_calloc.c
+- Alloue une zone mémoire initialisée à zéro.
+
+libft/ft_isalnum.c
+- Teste si un caractère est alphanumérique.
+
+libft/ft_isalpha.c
+- Teste si un caractère est alphabétique.
+
+libft/ft_isascii.c
+- Teste si une valeur est dans l’intervalle ASCII.
+
+libft/ft_isdigit.c
+- Teste si un caractère est un chiffre.
+
+libft/ft_isprint.c
+- Teste si un caractère est imprimable.
+
+libft/ft_itoa.c
+- Convertit un entier en chaîne nouvellement allouée.
+
+libft/ft_lstadd_back.c
+- Ajoute un maillon en fin de liste chaînée.
+
+libft/ft_lstadd_front.c
+- Ajoute un maillon en tête de liste chaînée.
+
+libft/ft_lstclear.c
+- Efface et libère une liste chaînée complète.
+
+libft/ft_lstdelone.c
+- Supprime/libère un seul maillon de liste.
+
+libft/ft_lstiter.c
+- Applique une fonction sur chaque maillon d’une liste.
+
+libft/ft_lstlast.c
+- Retourne le dernier maillon d’une liste.
+
+libft/ft_lstmap.c
+- Crée une nouvelle liste en transformant chaque maillon source.
+
+libft/ft_lstnew.c
+- Crée un nouveau maillon de liste chaînée.
+
+libft/ft_lstsize.c
+- Compte le nombre de maillons d’une liste.
+
+libft/ft_memchr.c
+- Cherche un octet dans une zone mémoire.
+
+libft/ft_memcmp.c
+- Compare deux zones mémoire octet par octet.
+
+libft/ft_memcpy.c
+- Copie une zone mémoire vers une autre sans gestion du recouvrement.
+
+libft/ft_memmove.c
+- Copie mémoire avec gestion sûre du recouvrement.
+
+libft/ft_memset.c
+- Remplit une zone mémoire avec une valeur d’octet.
+
+libft/ft_putchar_fd.c
+- Écrit un caractère sur un descripteur de fichier.
+
+libft/ft_putendl_fd.c
+- Écrit une chaîne suivie d’un retour ligne sur un FD.
+
+libft/ft_putnbr_fd.c
+- Écrit un entier sur un FD.
+
+libft/ft_putstr_fd.c
+- Écrit une chaîne sur un FD.
+
+libft/ft_split.c
+- Découpe une chaîne selon un séparateur et renvoie un tableau alloué.
+
+libft/ft_strchr.c
+- Cherche la première occurrence d’un caractère dans une chaîne.
+
+libft/ft_strdup.c
+- Duplique une chaîne dans une nouvelle allocation.
+
+libft/ft_striteri.c
+- Itère sur une chaîne mutable en passant index + pointeur caractère.
+
+libft/ft_strjoin.c
+- Concatène deux chaînes dans une nouvelle allocation.
+
+libft/ft_strlcat.c
+- Concatène avec taille tampon bornée (style BSD `strlcat`).
+
+libft/ft_strlcpy.c
+- Copie avec taille tampon bornée (style BSD `strlcpy`).
+
+libft/ft_strlen.c
+- Retourne la longueur d’une chaîne.
+
+libft/ft_strmapi.c
+- Crée une nouvelle chaîne en appliquant une fonction indexée.
+
+libft/ft_strncmp.c
+- Compare deux chaînes sur `n` caractères max.
+
+libft/ft_strnstr.c
+- Cherche une sous-chaîne dans une chaîne avec limite de longueur.
+
+libft/ft_strrchr.c
+- Cherche la dernière occurrence d’un caractère dans une chaîne.
+
+libft/ft_strtrim.c
+- Retire les caractères d’un set en début/fin de chaîne.
+
+libft/ft_substr.c
+- Extrait une sous-chaîne allouée depuis une position/longueur.
+
+libft/ft_tolower.c
+- Convertit un caractère en minuscule si applicable.
+
+libft/ft_toupper.c
+- Convertit un caractère en majuscule si applicable.
+
+
+----- minishell_tester (fichier C de test présent dans le repo) -----
+
+minishell_tester/test_files/loop.c
+- Petit programme de test qui fork puis boucle infiniment pour stresser la gestion des processus/signaux/redirections.
+
+
+============================================================
+4) 5 QUESTIONS PIÈGES TECHNIQUES (avec réponses basées sur TON code)
+============================================================
+
+Q1) Pourquoi une redirection `>` peut déjà créer/tronquer un fichier avant même l’exécution réelle ?
+R: Dans `parse_redir.c`, `handle_output_redir` fait un `open(... O_TRUNC/O_APPEND ...)` pendant le parsing pour détecter les erreurs de permission, puis ferme immédiatement. Le fichier peut donc être impacté très tôt, avant fork/exec.
+
+Q2) Dans `export X=1 | cat`, pourquoi `X` ne reste pas dans l’environnement du shell ?
+R: En pipeline, chaque maillon est forké (`exec_pipe_run.c`) et les builtins du pipeline tournent côté enfant (`pipe_child_exec`), donc les modifications d’environnement meurent avec le process enfant.
+
+Q3) Quel status final garde le shell pour `cmd1 | cmd2 | cmd3` si `cmd1` échoue mais `cmd3` réussit ?
+R: Le code ne retient que le statut du dernier process du pipeline (`wait_all_children` dans `exec_pipe.c`, cas `i == count - 1`), donc le status final suit `cmd3`.
+
+Q4) Que fait exactement Ctrl+C pendant un heredoc dans ton implémentation ?
+R: `herydoc_sigint` met `g_exit_status=130`, affiche `^C`, ferme `STDIN`; la lecture heredoc s’arrête, `handle_heredoc` ferme les FDs du pipe heredoc, restaure `stdin` et le handler normal, puis `prepare_heredocs` échoue et la commande est abandonnée.
+
+Q5) `exit 1 2` quitte-t-il le shell ? Et `exit abc` ?
+R: `exit 1 2` affiche “too many arguments”, retourne `1` et ne quitte pas; `exit abc` affiche “numeric argument required”, positionne `g_exit_status=2` et retourne `-1` donc la boucle shell quitte via le dispatch d’exécution.
+
+
+============================================================
+5) CHECKLIST ORALE RAPIDE (30 secondes avant soutenance)
+============================================================
+
+- Je sais expliquer pourquoi un builtin seul est exécuté dans le parent.
+- Je sais expliquer pourquoi un builtin dans un pipeline n’impacte pas l’état parent.
+- Je sais montrer où le status global est mis à jour (`g_exit_status`).
+- Je sais tracer le cycle de vie mémoire de `t_token`, `t_cmd`, `env`.
+- Je sais justifier la gestion de SIGINT en mode normal vs heredoc vs enfant.
