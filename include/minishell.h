@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
+/*   Updated: 2026/02/15 15:29:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ char	*get_cmd_path(char *cmd, char **env);
 int		setup_redirections(t_cmd *cmd);
 
 // exec_heredoc.c
-int		handle_heredoc(char *delimiter);
+int		handle_heredoc(char *delimiter, char **env);
 void	drain_heredoc(char *delimiter);
 
 // exec_pipe.c
@@ -213,7 +213,7 @@ void	setup_parent_signals(void);
 void	restore_signals(void);
 
 // exec_heredoc.c
-int		prepare_heredocs(t_cmd *cmds);
+int		prepare_heredocs(t_cmd *cmds, char **env);
 
 // exec_env.c
 int		get_env_index(char *name, char **env);

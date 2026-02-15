@@ -6,7 +6,7 @@
 #    By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/11 16:30:00 by mehdi             #+#    #+#              #
-#    Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr        #
+#    Updated: 2026/02/15 15:31:30 by mhachem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,6 +80,7 @@ EXEC_SRC    = exec.c \
               exec_pipe_run.c \
               exec_redir.c \
               exec_heredoc.c \
+			  exec_heredoc_utils.c \
               exec_env.c \
               exec_signals.c \
               exec_error.c \

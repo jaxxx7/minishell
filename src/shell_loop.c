@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
+/*   Updated: 2026/02/15 15:29:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	process_input(char *input, char ***env)
 	free_tokens(tokens);
 	if (!cmds)
 		return (0);
-	if (prepare_heredocs(cmds) == -1)
+	if (prepare_heredocs(cmds, *env) == -1)
 	{
 		free_commands(cmds);
 		return (0);
