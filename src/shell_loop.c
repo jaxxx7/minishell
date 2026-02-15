@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:04:11 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 13:54:45 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	has_unclosed_quotes(char *input)
+{
+	int	single_q;
+	int	double_q;
+	int	i;
+
+	single_q = 0;
+	double_q = 0;
+	i = 0;
+	while (input[i])
+	{
+		if (input[i] == '\'' && !double_q)
+			single_q = !single_q;
+		else if (input[i] == '"' && !single_q)
+			double_q = !double_q;
+		i++;
+	}
+	return (single_q || double_q);
+}
 
 static int	process_input(char *input, char ***env)
 {
@@ -54,6 +74,13 @@ void	shell_loop(char ***env)
 		}
 		if (!*input)
 		{
+			free(input);
+			continue ;
+		}
+		if (has_unclosed_quotes(input))
+		{
+			ft_putendl_fd("syntax error: unclosed quote", 2);
+			g_exit_status = 2;
 			free(input);
 			continue ;
 		}

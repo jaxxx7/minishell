@@ -18,7 +18,7 @@ HERE
 DOC
 
 
-1. Unclosed quotes — MANQUANT
+1 FIX . Unclosed quotes — MANQUANT
 Le sujet dit : "Not interpret unclosed quotes". Actuellement, echo "hello supprime silencieusement le guillemet et affiche hello. Il faut détecter et refuser les quotes non fermées avec une erreur et $? = 2.
 
 2 FIX . Syntax errors ne set pas $? à 2 — ISSUE
