@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,12 @@ static int	setup_output_redir(char *outfile, int append)
 
 int	setup_redirections(t_cmd *cmd)
 {
-	if (cmd->heredoc_fd != -1)
+	if (cmd->redir_error)
+	{
+		print_error(cmd->redir_err_file, cmd->redir_err_msg);
+		return (-1);
+	}
+	if (cmd->input_type == HEREDOC && cmd->heredoc_fd != -1)
 	{
 		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
 		{
@@ -71,8 +76,14 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(cmd->heredoc_fd);
 	}
-	else if (cmd->infile && setup_input_redir(cmd->infile) == -1)
+	else if (cmd->input_type == REDIR_IN && cmd->infile
+		&& setup_input_redir(cmd->infile) == -1)
 		return (-1);
+	if (cmd->input_type != HEREDOC && cmd->heredoc_fd != -1)
+	{
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
+	}
 	if (cmd->outfile && setup_output_redir(cmd->outfile, cmd->append) == -1)
 		return (-1);
 	return (0);

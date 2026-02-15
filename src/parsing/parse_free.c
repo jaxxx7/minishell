@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_free.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:21:13 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:04:15 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ void	free_single_cmd(t_cmd *cmd)
 		free(cmd->outfile);
 	if (cmd->heredoc)
 		free(cmd->heredoc);
+	if (cmd->redir_err_file)
+		free(cmd->redir_err_file);
+	if (cmd->redir_err_msg)
+		free(cmd->redir_err_msg);
 	if (cmd->heredoc_fd != -1)
 		close(cmd->heredoc_fd);
 	free(cmd);

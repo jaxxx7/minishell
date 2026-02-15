@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_single_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:15:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 15:25:00 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,12 @@ static t_cmd	*init_cmd(void)
 	cmd->infile = NULL;
 	cmd->outfile = NULL;
 	cmd->append = 0;
+	cmd->input_type = 0;
 	cmd->heredoc = NULL;
 	cmd->heredoc_fd = -1;
 	cmd->redir_error = 0;
+	cmd->redir_err_file = NULL;
+	cmd->redir_err_msg = NULL;
 	cmd->next = NULL;
 	return (cmd);
 }

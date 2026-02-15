@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_simple.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	child_process(t_cmd *cmd, char **env)
 {
 	char	*path;
 
-	if (cmd->redir_error || setup_redirections(cmd) == -1)
+	if (setup_redirections(cmd) == -1)
 		child_exit(cmd, env, 1);
 	path = get_cmd_path(cmd->args[0], env);
 	if (!path)

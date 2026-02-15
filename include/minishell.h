@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/11 17:09:42 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 14:13:30 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/types.h>
 # include <signal.h>
 # include <string.h>
 # include <errno.h>
@@ -53,9 +54,12 @@ typedef struct s_cmd
 	char			*infile;
 	char			*outfile;
 	int				append;
+	int				input_type;
 	char			*heredoc;
 	int				heredoc_fd;
 	int				redir_error;
+	char			*redir_err_file;
+	char			*redir_err_msg;
 	struct s_cmd	*next;
 }	t_cmd;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/03 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	pipe_child_exec(t_cmd *cmd, t_pipe_data *data)
 	char	*path;
 	int		ret;
 
-	if (cmd->redir_error || setup_redirections(cmd) == -1)
+	if (setup_redirections(cmd) == -1)
 		pipe_child_exit(data, 1);
 	if (!cmd->args || !cmd->args[0])
 		pipe_child_exit(data, 0);
