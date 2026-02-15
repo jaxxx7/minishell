@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe_run.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/03 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/15 14:32:54 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <sys/wait.h>
+
+static void	print_pipeline_redir_errors(t_cmd *cmds)
+{
+	while (cmds)
+	{
+		if (cmds->redir_error && cmds->redir_err_file && cmds->redir_err_msg)
+			print_error(cmds->redir_err_file, cmds->redir_err_msg);
+		cmds = cmds->next;
+	}
+}
 
 static void	child_process(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
 {
@@ -56,6 +66,7 @@ static int	run_all_commands(t_pipe_data *data, int *pipes, pid_t *pids)
 	close_heredocs(data->cmds);
 	close_pipes(pipes, data->count);
 	wait_all_children(pids, data->count);
+	print_pipeline_redir_errors(data->cmds);
 	restore_signals();
 	return (0);
 }
