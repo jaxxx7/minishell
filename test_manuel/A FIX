@@ -38,3 +38,8 @@ ft_atoi() ne détecte pas l'overflow. exit 9999999999999999999 devrait afficher 
 
 7 FIX . Heredocs dans pipelines — ISSUE
 Avec cat << A | grep << B, les enfants lisent les heredocs en parallèle (race condition). Bash lit tous les heredocs séquentiellement avant de fork.
+
+
+8. echo \n affiche "\n" au lieu de "n"
+
+9.tester les varirable avec export
