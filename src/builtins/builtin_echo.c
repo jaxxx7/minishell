@@ -9,7 +9,6 @@
 /*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 static int	is_n_flag(char *arg)
@@ -38,6 +37,22 @@ static int	skip_n_flags(char **args)
 	return (i);
 }
 
+static void	echo_print_arg(char *arg)
+{
+	char		*san;
+	int			len;
+
+	len = get_stripped_len(arg);
+	san = fill_stripped(arg, len);
+	if (san)
+	{
+		ft_putstr_fd(san, 1);
+		free(san);
+	}
+	else
+		ft_putstr_fd(arg, 1);
+}
+
 int	builtin_echo(char **args)
 {
 	int	i;
@@ -52,7 +67,7 @@ int	builtin_echo(char **args)
 	}
 	while (args[i])
 	{
-		ft_putstr_fd(args[i], 1);
+		echo_print_arg(args[i]);
 		if (args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;

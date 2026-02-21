@@ -232,6 +232,9 @@ int		execute_builtin(t_cmd *cmd, char ***env);
 
 // builtin_echo.c
 int		builtin_echo(char **args);
+// echo utils
+char	*fill_stripped(const char *s, int len);
+int		get_stripped_len(const char *s);
 
 // builtin_cd.c
 int		builtin_cd(char **args, char ***env);

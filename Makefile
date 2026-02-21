@@ -88,7 +88,8 @@ EXEC_SRC    = exec.c \
 
 # Builtins
 BUILT_SRC   = builtins.c \
-              builtin_echo.c \
+			  builtin_echo.c \
+			  builtin_echo_utils.c \
               builtin_cd.c \
               builtin_pwd.c \
               builtin_export.c \
