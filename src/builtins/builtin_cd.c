@@ -63,18 +63,24 @@ static char	*get_cd_path(char **args, char ***env)
 int	builtin_cd(char **args, char ***env)
 {
 	char	*path;
+	char	*path_dup;
 
-	if (args[2])
+	if (args[1] && args[2])
 		return (error_return("cd", "too many arguments", 1));
 	path = get_cd_path(args, env);
 	if (!path)
 		return (1);
-	update_oldpwd(env);
-	if (chdir(path) == -1)
+	path_dup = ft_strdup(path);
+	if (!path_dup)
+		return (error_return("cd", "memory allocation error", 1));
+	if (chdir(path_dup) == -1)
 	{
 		print_error_arg("cd", args[1], "No such file or directory");
+		free(path_dup);
 		return (1);
 	}
+	update_oldpwd(env);
 	update_pwd(env);
+	free(path_dup);
 	return (0);
 }
