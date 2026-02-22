@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   parse_single_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:15:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/15 14:10:32 by mhachem          ###   ########.fr       */
+/*   Updated: 2026/02/22 15:52:49 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	is_fd_redir_word(t_token *token)
+{
+	int	i;
+
+	if (!token || token->type != WORD || !token->value || !token->next)
+		return (0);
+	if (!(token->next->type >= REDIR_IN && token->next->type <= HEREDOC))
+		return (0);
+	i = 0;
+	if (!token->value[i])
+		return (0);
+	while (token->value[i])
+	{
+		if (!ft_isdigit(token->value[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 static t_cmd	*init_cmd(void)
 {
@@ -42,7 +62,7 @@ static int	count_args(t_token *tokens)
 	tmp = tokens;
 	while (tmp && tmp->type != PIPE)
 	{
-		if (tmp->type == WORD)
+		if (tmp->type == WORD && !is_fd_redir_word(tmp))
 			count++;
 		else if (tmp->type >= REDIR_IN && tmp->type <= HEREDOC)
 			tmp = tmp->next;
@@ -64,7 +84,7 @@ static int	fill_args(t_cmd *cmd, t_token *tokens)
 	i = 0;
 	while (tokens && tokens->type != PIPE)
 	{
-		if (tokens->type == WORD)
+		if (tokens->type == WORD && !is_fd_redir_word(tokens))
 			cmd->args[i++] = ft_strdup(tokens->value);
 		else if (tokens->type >= REDIR_IN && tokens->type <= HEREDOC)
 			tokens = tokens->next;

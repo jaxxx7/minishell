@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/22 15:52:23 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	execute_builtin_cmd(char *cmd, char **args, char ***env)
 	if (ft_strncmp(cmd, "unset", 6) == 0)
 		return (builtin_unset(args, env));
 	if (ft_strncmp(cmd, "env", 4) == 0)
-		return (builtin_env(*env));
+		return (builtin_env(args, *env));
 	if (ft_strncmp(cmd, "exit", 5) == 0)
 		return (builtin_exit(args));
 	return (1);

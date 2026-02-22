@@ -3,19 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   exec_child_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/13 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/22 17:00:27 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	close_stdio_in_child(void)
+{
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+}
+
 void	child_exit(t_cmd *cmds, char **env, int status)
 {
 	free_commands(cmds);
 	free_env(env);
+	close_stdio_in_child();
 	exit(status);
 }
 
@@ -25,6 +33,7 @@ void	pipe_child_exit(t_pipe_data *data, int status)
 	free_env(*data->env);
 	free(data->pipes);
 	free(data->pids);
+	close_stdio_in_child();
 	exit(status);
 }
 

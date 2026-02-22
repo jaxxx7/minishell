@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/15 15:29:46 by mhachem          ###   ########.fr       */
+/*   Updated: 2026/02/22 15:52:33 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ int		builtin_export(char **args, char ***env);
 int		builtin_unset(char **args, char ***env);
 
 // builtin_env.c
-int		builtin_env(char **env);
+int		builtin_env(char **args, char **env);
 
 // builtin_exit.c
 int		builtin_exit(char **args);

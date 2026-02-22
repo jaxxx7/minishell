@@ -6,11 +6,40 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 17:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/01/11 17:10:00 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/22 15:51:35 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*append_char(char *result, char c)
+{
+	char	chunk[2];
+
+	chunk[0] = c;
+	chunk[1] = '\0';
+	result = strjoin_free_s1(result, chunk);
+	if (!result)
+		return (NULL);
+	return (result);
+}
+
+static char	*handle_backslash(char *str, int *i, char *result)
+{
+	if (str[*i + 1] && (str[*i + 1] == '$' || str[*i + 1] == '\\'))
+	{
+		result = append_char(result, str[*i + 1]);
+		if (!result)
+			return (NULL);
+		*i += 2;
+		return (result);
+	}
+	result = append_char(result, str[*i]);
+	if (!result)
+		return (NULL);
+	(*i)++;
+	return (result);
+}
 
 static char	*expand_var_found(char *str, int *i, char **env, char *result)
 {
@@ -65,7 +94,7 @@ static char	*expand_text(char *str, int *i, char *result)
 	char	*chunk;
 
 	start = *i;
-	while (str[*i] && str[*i] != '$')
+	while (str[*i] && str[*i] != '$' && str[*i] != '\\')
 		(*i)++;
 	chunk = ft_substr(str, start, *i - start);
 	if (!chunk)
@@ -88,7 +117,13 @@ char	*expand_str(char *str, char **env)
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '\\')
+		{
+			result = handle_backslash(str, &i, result);
+			if (!result)
+				return (NULL);
+		}
+		else if (str[i] == '$')
 		{
 			result = expand_variable(str, &i, env, result);
 			if (!result)

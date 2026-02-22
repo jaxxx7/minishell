@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/22 15:52:09 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,25 @@ int	builtin_cd(char **args, char ***env)
 {
 	char	*path;
 	char	*path_dup;
+	char	*home;
 
 	if (args[1] && args[2])
 		return (error_return("cd", "too many arguments", 1));
-	path = get_cd_path(args, env);
-	if (!path)
-		return (1);
-	path_dup = ft_strdup(path);
+	path_dup = NULL;
+	if (args[1] && args[1][0] == '~' && args[1][1] == '/')
+	{
+		home = get_env_val("HOME", *env);
+		if (!home)
+			return (print_error("cd", "HOME not set"), 1);
+		path_dup = ft_strjoin(home, args[1] + 1);
+	}
+	else
+	{
+		path = get_cd_path(args, env);
+		if (!path)
+			return (1);
+		path_dup = ft_strdup(path);
+	}
 	if (!path_dup)
 		return (error_return("cd", "memory allocation error", 1));
 	if (chdir(path_dup) == -1)

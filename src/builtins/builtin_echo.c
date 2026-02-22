@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yanisubu <yanisubu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/01/15 10:00:00 by yanisubu         ###   ########.fr       */
+/*   Updated: 2026/02/22 15:53:52 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	is_n_flag(char *arg)
@@ -37,22 +38,6 @@ static int	skip_n_flags(char **args)
 	return (i);
 }
 
-static void	echo_print_arg(char *arg)
-{
-	char		*san;
-	int			len;
-
-	len = get_stripped_len(arg);
-	san = fill_stripped(arg, len);
-	if (san)
-	{
-		ft_putstr_fd(san, 1);
-		free(san);
-	}
-	else
-		ft_putstr_fd(arg, 1);
-}
-
 int	builtin_echo(char **args)
 {
 	int	i;
@@ -67,7 +52,7 @@ int	builtin_echo(char **args)
 	}
 	while (args[i])
 	{
-		echo_print_arg(args[i]);
+		ft_putstr_fd(args[i], 1);
 		if (args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;
