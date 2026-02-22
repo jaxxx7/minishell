@@ -13,11 +13,14 @@
 #include "minishell.h"
 #include <sys/wait.h>
 
-static void	child_process(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
+void	print_pipeline_redir_errors(t_cmd *cmds)
 {
-	setup_child_signals();
-	setup_pipe_child(pipes, i, data->count);
-	pipe_child_exec(cmd, data);
+	while (cmds)
+	{
+		if (cmds->redir_error && cmds->redir_err_file && cmds->redir_err_msg)
+			print_error(cmds->redir_err_file, cmds->redir_err_msg);
+		cmds = cmds->next;
+	}
 }
 
 static int	fork_command(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
@@ -31,7 +34,7 @@ static int	fork_command(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
 		return (-1);
 	}
 	if (pid == 0)
-		child_process(cmd, pipes, i, data);
+		child_process_pipe(cmd, pipes, i, data);
 	return (pid);
 }
 

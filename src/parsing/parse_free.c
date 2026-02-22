@@ -59,3 +59,34 @@ void	free_commands(t_cmd *cmds)
 		free_single_cmd(tmp);
 	}
 }
+
+void	drain_heredoc(char *delimiter)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			break ;
+		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
+		{
+			free(line);
+			break ;
+		}
+		free(line);
+	}
+}
+
+void	free_tokens(t_token *tokens)
+{
+	t_token	*tmp;
+
+	while (tokens)
+	{
+		tmp = tokens;
+		tokens = tokens->next;
+		free(tmp->value);
+		free(tmp);
+	}
+}

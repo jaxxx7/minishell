@@ -43,11 +43,6 @@ static int	execute_single(t_cmd *cmd, char ***env)
 	return (0);
 }
 
-static void	execute_pipeline(t_cmd *cmds, char ***env)
-{
-	execute_pipes(cmds, env);
-}
-
 int	execute_commands(t_cmd *cmds, char ***env)
 {
 	int	cmd_count;
@@ -57,6 +52,6 @@ int	execute_commands(t_cmd *cmds, char ***env)
 	cmd_count = count_commands(cmds);
 	if (cmd_count == 1)
 		return (execute_single(cmds, env));
-	execute_pipeline(cmds, env);
+	execute_pipes(cmds, env);
 	return (0);
 }

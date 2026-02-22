@@ -40,3 +40,10 @@ void	close_heredocs(t_cmd *cmds)
 		current = current->next;
 	}
 }
+
+void	child_process_pipe(t_cmd *cmd, int *pipes, int i, t_pipe_data *data)
+{
+	setup_child_signals();
+	setup_pipe_child(pipes, i, data->count);
+	pipe_child_exec(cmd, data);
+}

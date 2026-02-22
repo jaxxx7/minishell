@@ -204,6 +204,7 @@ int		error_return(char *cmd, char *msg, int ret);
 void	child_exit(t_cmd *cmds, char **env, int status);
 void	pipe_child_exit(t_pipe_data *data, int status);
 void	close_heredocs(t_cmd *cmds);
+void	child_process_pipe(t_cmd *cmd, int *pipes, int i, t_pipe_data *data);
 
 // exec_signals.c
 void	handle_sigint(int sig);
