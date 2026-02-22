@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 10:00:00 by yanisubu          #+#    #+#             */
-/*   Updated: 2026/02/22 15:52:09 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/22 17:14:59 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,31 +60,45 @@ static char	*get_cd_path(char **args, char ***env)
 	return (args[1]);
 }
 
-int	builtin_cd(char **args, char ***env)
+static char	*resolve_cd_target(char **args, char ***env, int *status)
 {
 	char	*path;
-	char	*path_dup;
 	char	*home;
 
-	if (args[1] && args[2])
-		return (error_return("cd", "too many arguments", 1));
-	path_dup = NULL;
+	*status = 0;
 	if (args[1] && args[1][0] == '~' && args[1][1] == '/')
 	{
 		home = get_env_val("HOME", *env);
 		if (!home)
-			return (print_error("cd", "HOME not set"), 1);
-		path_dup = ft_strjoin(home, args[1] + 1);
+			return (print_error("cd", "HOME not set"), *status = 1, NULL);
+		path = ft_strjoin(home, args[1] + 1);
 	}
 	else
 	{
 		path = get_cd_path(args, env);
 		if (!path)
-			return (1);
-		path_dup = ft_strdup(path);
+			return (*status = 1, NULL);
+		path = ft_strdup(path);
 	}
+	if (!path)
+		*status = 2;
+	return (path);
+}
+
+int	builtin_cd(char **args, char ***env)
+{
+	char	*path_dup;
+	int		status;
+
+	if (args[1] && args[2])
+		return (error_return("cd", "too many arguments", 1));
+	path_dup = resolve_cd_target(args, env, &status);
 	if (!path_dup)
-		return (error_return("cd", "memory allocation error", 1));
+	{
+		if (status == 2)
+			return (error_return("cd", "memory allocation error", 1));
+		return (1);
+	}
 	if (chdir(path_dup) == -1)
 	{
 		print_error_arg("cd", args[1], "No such file or directory");

@@ -6,7 +6,7 @@
 /*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:40:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/22 15:52:33 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/22 17:13:31 by mehdi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,9 @@ char	*expand_exit_status(int *i, char *result);
 
 // expand_str.c
 char	*expand_str(char *str, char **env);
+char	*expand_append_char(char *result, char c);
+char	*expand_handle_backslash(char *str, int *i, char *result);
+char	*expand_text_chunk(char *str, int *i, char *result);
 
 // expand_mixed.c
 char	*expand_mixed(char *str, char **env);
