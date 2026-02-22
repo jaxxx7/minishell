@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mehdi <mehdi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by mehdi             #+#    #+#             */
-/*   Updated: 2026/02/22 16:49:53 by mehdi            ###   ########.fr       */
+/*   Updated: 2026/02/15 15:07:46 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,14 @@ void	handle_sigint(int sig)
 	g_signal = sig;
 	write(1, "^C\n", 3);
 	rl_on_new_line();
-	#ifdef __APPLE__
-	rl_redisplay();
-	#else
 	rl_replace_line("", 0);
 	rl_redisplay();
-	#endif
 }
 
 // Initialisation des signaux
 void	setup_signals(void)
 {
+	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -94,6 +91,6 @@ int	main(int ac, char **av, char **envp)
 	setup_signals();
 	shell_loop(&env);
 	free_env(env);
-	clear_history();
+	rl_clear_history();
 	return (get_exit_status());
 }
